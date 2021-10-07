@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from sqlmodel import SQLModel, create_engine
+from sqlmodel import SQLModel, create_engine, Session
 
 from datastore.model import Meter, Metric
 
@@ -17,17 +17,23 @@ def create_db_and_tables():
 
 app = FastAPI()
 
-
 @app.on_event("startup")
 def on_startup():
     create_db_and_tables()
 
 
-@app.post("/usages/")
-def create_usage(usage: Usage):
-    return "TODO"
-
-
-@app.get("/usages/")
+@app.get("/meters/")
 def read_usage():
-    return "TODO"
+    with Session(engine) as session:
+        meters = session.query(Meter).all()
+        return meters
+
+@app.get("/meters/{meter_id}/")
+def read_meter(meter_id: int):
+    with Session(engine) as session:
+        meter = session.query(Meter).filter(Meter.id == meter_id).first()
+        return meter
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
