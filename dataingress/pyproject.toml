@@ -7,7 +7,7 @@ authors = ["Jonas Wyss", "Benj Fassbind"]
 [tool.poetry.dependencies]
 python = "^3.8"
 paho-mqtt = "^1.5.1"
-datastore = "^0.3.6"
+datastore = { path = "../datastore/", develop = false }
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"
