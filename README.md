@@ -1,2 +1,3 @@
-# hslu-wipro-smart-mertic
-WIRRO for smart metric monitoring
+# hslu-wipro-smic
+## "Smart Meter Into the ☁!"
+WIPRO @ HSLU
