@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "api"
+version = "0.0.0"
+description = "Smart Meter API"
+authors = ["Jonas Wyss", "Benj Fassbind"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+fastapi = "^0.68.2"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.2.5"
+pylint = "^2.11.1"
+black = "^21.9b0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

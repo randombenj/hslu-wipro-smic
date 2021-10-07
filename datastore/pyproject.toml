@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "datastore"
+version = "0.0.0"
+description = "Data schema and storage functionality for smart metric"
+authors = ["Jonas Wyss", "Benj Fassbind"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+sqlmodel = "^0.0.4"
+
+[tool.poetry.dev-dependencies]
+black = "^21.9b0"
+pylint = "^2.11.1"
+pytest = "^6.2.5"
+
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
