@@ -86,7 +86,7 @@ description = "Data schema and storage functionality for smart metric"
 category = "main"
 optional = false
 python-versions = "^3.8"
-develop = false
+develop = true
 
 [package.dependencies]
 sqlmodel = "^0.0.4"
@@ -374,7 +374,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "19076e1e24197490cbc3559c1a5a2a947eb96095db89cb893d9d9badd40668d3"
+content-hash = "0e9fd9892d2e53df8e9e264185041b0f40c1723e2927160ce987fafbc64b7670"
 
 [metadata.files]
 astroid = [
