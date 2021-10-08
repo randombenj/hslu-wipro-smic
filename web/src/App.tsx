@@ -1,8 +1,15 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import Service from './Service'
 
 function App() {
+  // just for testing of the service, will be removed ;)=
+  let service =  new Service();
+  service.getMeters().then(data => {
+    console.log(data);
+  });
+
   return (
     <div className="App">
       <header className="App-header">
