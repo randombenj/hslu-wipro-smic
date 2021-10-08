@@ -7,6 +7,7 @@ authors = ["Jonas Wyss", "Benj Fassbind"]
 [tool.poetry.dependencies]
 python = "^3.8"
 fastapi = "^0.68.2"
+uvicorn = "^0.15.0"
 datastore = { path = "../datastore/", develop = true }
 
 [tool.poetry.dev-dependencies]
