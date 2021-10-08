@@ -1,8 +1,6 @@
 name: Publish Docker image
 
-on:
-  release:
-    types: [published]
+on: [push, pull_request]
 
 jobs:
   publish-containers-components:
