@@ -9,7 +9,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     POETRY_NO_INTERACTION=1
 
 # set the application name
-ENV APP=api
+ENV APP=dataingress
 
 # =============== BUILDER ===============
 FROM base AS builder
@@ -18,7 +18,7 @@ RUN pip install poetry==1.1.11
 
 # Copy the library source code
 COPY api/pyproject.toml api/poetry.lock /app/
-COPY datastore /app/
+COPY datastore /app
 
 # Install the application
 WORKDIR /app/$APP
@@ -30,8 +30,8 @@ FROM base AS production
 
 # Copy the build artifact
 COPY --from=builder /app /app/$APP
-COPY $APP/api /app/$APP
+COPY $APP/dataingress /app/$APP
 
 WORKDIR /app/$APP
 ENTRYPOINT [".venv/bin/python3"]
-CMD ["-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "80"]
+CMD ["-m", "dataingress"]
