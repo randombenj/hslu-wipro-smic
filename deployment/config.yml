@@ -42,6 +42,12 @@ spec:
       name: c64ea45e067bcb63d6bdd8e03fba5a7eb202b2b4decf98d86c6254acf8ee8642-pvc
     - mountPath: /mosquitto/data
       name: 0a36de42ee4516adc6843b3f54d8a0e376b1708a5014d690b8d303ed3fdfb7f2-pvc
+    ports:
+    - containerPort: 1883
+      hostPort: 1883
+    - containerPort: 9001
+      hostPort: 9001
+      protocol: TCP
     workingDir: /
   dnsConfig: {}
   restartPolicy: Always

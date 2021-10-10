@@ -4,7 +4,7 @@ import logging
 from paho.mqtt import client as mqtt_client
 
 
-broker = "mqtt"
+broker = "localhost"
 port = 1883
 topic = "python/mqtt"
 # generate client ID with pub prefix randomly
