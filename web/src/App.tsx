@@ -1,33 +1,20 @@
-import React from 'react';
-import logo from './logo.svg';
 import './App.css';
-import Service from './Service'
 
+import { CachePolicies, Provider } from "use-http";
+import VoltageGraph from './components/voltageGraph';
 function App() {
-  // just for testing of the service, will be removed ;)=
-  let service =  new Service();
-  service.getMeters().then(data => {
-    console.log(data);
-  });
 
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Provider url="http://localhost:8000/" options={{ cacheLife: 0, cachePolicy: CachePolicies.NO_CACHE }}>
+        <header className="App-header">
+          <VoltageGraph></VoltageGraph>
+        </header>
+      </Provider>
     </div>
   );
+
+
 }
 
 export default App;

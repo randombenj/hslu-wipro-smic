@@ -1,0 +1,25 @@
+import * as d3 from 'd3'
+import React from 'react';
+
+import { useEffect, useRef, useState } from "react"
+
+const data = [{ "0": 15 }, { "1": 70 }, { "2": 130 }, { "3": 230 }, { "4": 225 }, { "5": 230 }, { "6": 100 }, { "7": 10 }]
+
+
+
+export function Graph() {
+    const svgRef = React.createRef<SVGSVGElement>();
+
+    const svg = d3.select(svgRef.current).append('g').select('g');
+
+    const line = d3.line().x((d) => d[0]).y((d) => d[1]).curve(d3.curveMonotoneX);
+
+    svg.append('path').datum(data).attr('stroke-width', 3).attr('class', 'line').attr('d', line);
+    return (
+        <svg viewBox="0 0 100 50" style={{
+            border: "2px solid gold"
+        }} ref={svgRef}>
+
+        </svg >
+    )
+}
