@@ -1,13 +1,13 @@
 import useFetch from "use-http";
 import { Data } from "../data";
 import LineChart from "./lineChart";
-
+import {useGetMeasurements} from '../hooks/meters'
 const VoltageGraph = () => {
     const {
         loading,
         error,
-        data = {},
-    } = useFetch("meters/1/measurements", { method: "GET" }, []);
+        data,
+    } = useGetMeasurements(1);
 
     if (loading) return <p>Loading...</p>;
     else
