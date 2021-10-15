@@ -21,9 +21,9 @@ export class Data implements VoltagePoints {
         this.all_points = [];
         this.measurements.forEach(measurement => {
             const timestamp = new Date(measurement.capture_time).getSeconds();
-            this.phase1_points.push([measurement.voltage_phase_1, timestamp]);
-            this.phase2_points.push([measurement.voltage_phase_2, timestamp]);
-            this.phase3_points.push([measurement.voltage_phase_3, timestamp]);
+            this.phase1_points.push([timestamp, measurement.voltage_phase_1]);
+            this.phase2_points.push([timestamp, measurement.voltage_phase_2]);
+            this.phase3_points.push([timestamp, measurement.voltage_phase_3]);
         });
         this.all_points = this.phase1_points.concat( this.phase2_points, this.phase3_points);
 
