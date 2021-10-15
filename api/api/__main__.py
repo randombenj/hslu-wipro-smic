@@ -52,17 +52,12 @@ def set_defaults():
         session.query(Measurement).delete()
         meter1 = Meter(serial_number="Meter one", id=1)
         meter2 = Meter(serial_number="Meter two", id=2)
-        measurement1 = Measurement(meter_id=meter1.id, voltage_phase_1=10,
-                                   voltage_phase_2=20, voltage_phase_3=30, capture_time=datetime(2020, 1, 1, 0, 0, 0))
-        measurement2 = Measurement(meter_id=meter1.id, voltage_phase_1=10,
-                                   voltage_phase_2=22, voltage_phase_3=60, capture_time=datetime(2020, 1, 1, 0, 0, 1))
-        measurement3 = Measurement(meter_id=meter1.id, voltage_phase_1=10,
-                                   voltage_phase_2=25, voltage_phase_3=90, capture_time=datetime(2020, 1, 1, 0, 0, 2))
+        for i in range(0,59):
+            session.add(Measurement(meter_id=meter1.id, voltage_phase_1=10+i,
+                                   voltage_phase_2=(i*i)%230, voltage_phase_3=30, capture_time=datetime(2020, 1, 1, 0, 0, i)))
+   
         session.add(meter1)
         session.add(meter2)
-        session.add(measurement1)
-        session.add(measurement2)
-        session.add(measurement3)
         session.commit()
 
 
