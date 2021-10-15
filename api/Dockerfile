@@ -1,4 +1,4 @@
-FROM python:3.10 AS base
+FROM python:3.9 AS base
 
 # configure docker container
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -34,4 +34,4 @@ COPY $APP /app/$APP
 
 WORKDIR /app/$APP
 ENTRYPOINT [".venv/bin/python3"]
-CMD ["-m", "uvicorn", "api.__main__:app", "--host", "0.0.0.0", "--port", "80"]
+CMD ["-m","api", "--host", "0.0.0.0", "--port", "80"]

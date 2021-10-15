@@ -11,7 +11,7 @@ metadata:
 spec:
   containers:
   - name: api
-    args: ["-m", "uvicorn", "api.__main__:app", "--host", "0.0.0.0", "--port", "80"]
+    args: ["-m","api", "--host", "0.0.0.0", "--port", "80"]
     command:
     - .venv/bin/python3
     image: localhost/randombenj/hslu-wipro-smic-api
