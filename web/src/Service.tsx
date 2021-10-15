@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Measurement } from './data';
+import { Measurement } from './model/measurement';
 
 class Service{
     private readonly url = 'http://localhost:8000';
