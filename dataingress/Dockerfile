@@ -17,7 +17,7 @@ FROM base AS builder
 RUN pip install poetry==1.1.11
 
 # Copy the library source code
-COPY dataingress/pyproject.toml dataingress/poetry.lock /app/$APP
+COPY dataingress/pyproject.toml dataingress/poetry.lock /app/$APP/
 COPY datastore /app/datastore
 
 # Install the application

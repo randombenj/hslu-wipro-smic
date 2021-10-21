@@ -17,7 +17,7 @@ FROM base AS builder
 RUN pip install poetry==1.1.11
 
 # Copy the library source code
-COPY api/pyproject.toml api/poetry.lock /app/$APP
+COPY api/pyproject.toml api/poetry.lock /app/$APP/
 COPY datastore/ /app/datastore
 
 # Install the application
