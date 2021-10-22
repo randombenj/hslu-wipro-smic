@@ -44,7 +44,8 @@ class SMICIngress:
                     serial_number=data["meter_serial"]
                 )
                 session.add(meter)
-                session.commit()  # to get the id
+                session.commit()
+                session.refresh(meter)  # get id
 
             # insert data
             measurement = Measurement(

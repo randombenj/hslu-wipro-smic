@@ -7,12 +7,12 @@ from fakemeter import SMICCLient
 
 
 @given("a smart meter client")
-def step_impl(context):
+def step_get_client(context):
     context.client = SMICCLient()
 
 
 @when("we publish some measuring data")
-def step_impl(context):
+def step_publish_data(context):
     context.data = {
         "meter_serial": "1",
         "voltage_phase_1": 0.1,
@@ -24,13 +24,15 @@ def step_impl(context):
 
 
 @then("the data is available via the api")
-def step_impl(context):
-    response = requests.get("http://localhost:8080/meters/")
+def step_data_is_available(context):
+    response = requests.get("http://localhost:8080/meters")
     assert response.ok
-    assert response.json()[0]["id"] == context.data["meter_serial"]
+    meter_data = response.json()[0]
+    assert meter_data["serial_number"] == context.data["meter_serial"]
 
-    response = requests.get(f"http://localhost:8080/meters/{context.data['meter_serial']}/measurement")
+    response = requests.get(f"http://localhost:8080/meters/{meter_data['id']}/measurements")
     assert response.ok
-    assert response.json()[0]["voltage_phase_1"] == context.data["voltage_phase_1"]
-    assert response.json()[0]["voltage_phase_2"] == context.data["voltage_phase_2"]
-    assert response.json()[0]["voltage_phase_3"] == context.data["voltage_phase_3"]
+    measurement_data = response.json()[0]
+    assert measurement_data["voltage_phase_1"] == context.data["voltage_phase_1"]
+    assert measurement_data["voltage_phase_2"] == context.data["voltage_phase_2"]
+    assert measurement_data["voltage_phase_3"] == context.data["voltage_phase_3"]
