@@ -1,4 +1,5 @@
 import json
+import time
 import requests
 
 from behave import given, when, then, step
@@ -25,8 +26,18 @@ def step_publish_data(context):
 
 @then("the data is available via the api")
 def step_data_is_available(context):
-    response = requests.get("http://localhost:8080/meters")
-    assert response.ok
+
+    timeout = time.time() + 60  # seconds
+    while True:
+        response = requests.get("http://localhost:8080/meters")
+        assert response.ok
+
+        if len(response.json()) > 0:
+            break
+
+        if time.time() > timeout:
+            raise TimeoutError("Timed out waiting or api to serve the expected data")
+
     meter_data = response.json()[0]
     assert meter_data["serial_number"] == context.data["meter_serial"]
 
