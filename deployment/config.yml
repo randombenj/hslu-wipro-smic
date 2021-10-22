@@ -11,37 +11,40 @@ metadata:
 spec:
   containers:
   - name: api
-    args: ["-m","api", "--host", "0.0.0.0", "--port", "80"]
+    args: ["-m","api"]
+    env:
+    - name: SMIC_PORT
+      value: 80
     command:
     - .venv/bin/python3
-    image: localhost/randombenj/hslu-wipro-smic-api
+    image: randombenj/hslu-wipro-smic-api
+    volumeMounts:
+    - mountPath: /app/api/database.db
+      name: database
     ports:
     - containerPort: 80
       hostPort: 8080
       protocol: TCP
     workingDir: /app/api
   - name: dataingress
-    args:
-    - -m
-    - dataingress
+    args: [-m, dataingress]
     command:
     - .venv/bin/python3
-    env:
-    image: localhost/randombenj/hslu-wipro-smic-dataingress
+    image: randombenj/hslu-wipro-smic-dataingress
+    volumeMounts:
+    - mountPath: /app/dataingress/database.db
+      name: database
     workingDir: /app/dataingress
   - name: mqtt
-    args:
-    - /usr/sbin/mosquitto
-    - -c
-    - /mosquitto/config/mosquitto.conf
+    args: [/usr/sbin/mosquitto, -c, /mosquitto/config/mosquitto.conf]
     command:
     - /docker-entrypoint.sh
     image: docker.io/library/eclipse-mosquitto:latest
     volumeMounts:
     - mountPath: /mosquitto/log
-      name: c64ea45e067bcb63d6bdd8e03fba5a7eb202b2b4decf98d86c6254acf8ee8642-pvc
+      name: mqtt-logs
     - mountPath: /mosquitto/data
-      name: 0a36de42ee4516adc6843b3f54d8a0e376b1708a5014d690b8d303ed3fdfb7f2-pvc
+      name: mqtt-data
     ports:
     - containerPort: 1883
       hostPort: 1883
@@ -52,11 +55,14 @@ spec:
   dnsConfig: {}
   restartPolicy: Always
   volumes:
-  - name: 0a36de42ee4516adc6843b3f54d8a0e376b1708a5014d690b8d303ed3fdfb7f2-pvc
-    persistentVolumeClaim:
-      claimName: 0a36de42ee4516adc6843b3f54d8a0e376b1708a5014d690b8d303ed3fdfb7f2
-  - name: c64ea45e067bcb63d6bdd8e03fba5a7eb202b2b4decf98d86c6254acf8ee8642-pvc
-    persistentVolumeClaim:
-      claimName: c64ea45e067bcb63d6bdd8e03fba5a7eb202b2b4decf98d86c6254acf8ee8642
+  - name: database
+    hostPath:
+      path: data/database.db
+  - name: mqtt-data
+    hostPath:
+      path: data/mqtt-data/
+  - name: mqtt-logs
+    hostPath:
+      path: data/mqtt-logs/
 status: {}
 

@@ -9,7 +9,7 @@ class Meter(SQLModel, table=True):
 
 class Measurement(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
-    capture_time: datetime
+    capture_time: datetime = Field(default=datetime.now())
     voltage_phase_1: float
     voltage_phase_2: float
     voltage_phase_3: float

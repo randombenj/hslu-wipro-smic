@@ -34,3 +34,31 @@ jobs:
           file: ${{ matrix.component }}/Dockerfile
           push: true
           tags: randombenj/hslu-wipro-smic-${{ matrix.component }}:latest
+
+  run-end-2-end-tests:
+    needs: publish-containers-components
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get -y update
+          sudo apt-get -y install podman
+          sudo curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
+
+      - name: Start setup
+        run: |
+          mkdir -p data/mqtt-data/
+          mkdir -p data/mqtt-logs/
+          touch data/database.db
+          podman play kube deployment/config.yml
+
+      - name: Run tests
+        run: |
+          cd tests
+          $HOME/.poetry/bin/poetry install
+          $HOME/.poetry/bin/poetry run behave
+
+

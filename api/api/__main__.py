@@ -1,9 +1,7 @@
-from sqlite3.dbapi2 import Timestamp
 from fastapi import FastAPI
 from sqlmodel import SQLModel, create_engine, Session
 from datetime import datetime
 from datastore.model import Meter, Measurement
-from sys import argv
 
 
 SQLITE_FILE_NAME = "database.db"
