@@ -1,7 +1,19 @@
 import { Data } from "../data";
 import LineChart from "./lineChart";
 import { useGetMeasurements } from '../hooks/meters'
+import useWindowDimensions from "../hooks/windowDimensions";
+
+
+
 const VoltageGraph = () => {
+    const windowDimensions = useWindowDimensions();
+
+    const top = 80;
+    const bottom = 80;
+    const left = 60;
+    const right = 20;
+    const width = windowDimensions.width - left - right;
+    const height = width;
     const {
         loading,
         error,
@@ -13,9 +25,9 @@ const VoltageGraph = () => {
         return (
             <LineChart
                 svgProps={{
-                    margin: { top: 80, bottom: 80, left: 80, right: 80 },
-                    width: 400,
-                    height: 400,
+                    margin: { top, bottom, left, right },
+                    width,
+                    height,
                 }}
 
                 axisProps={{

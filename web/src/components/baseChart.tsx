@@ -70,8 +70,12 @@ const BaseChart = (drawChart:any, extraProps:any) => {
     function draw() {
       const svg = d3
         .select(svgRef.current)
-        .attr('width', width + margin.left + margin.right)
-        .attr('height', height + margin.top + margin.bottom)
+        .attr('height', "100%")
+        .attr('width', "100%")
+        // .attr('width', width + margin.left + margin.right)
+        // .attr('height', height + margin.top + margin.bottom)
+        // .attr('viewbox', `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
+        // .attr('preserveAspectRatio', "xMidYMid meet")
         .append('g')
         .attr('transform', `translate(${margin.left},${margin.top})`);
 
@@ -108,13 +112,14 @@ const BaseChart = (drawChart:any, extraProps:any) => {
     }
 
     return (
-      <div className="base__container">
+      // <div style={{height: "50%", width:"100%"}}>
         <svg
+          
           ref={svgRef}
-          className={classnames('base__svg-container', svgContainerClass)}
+  
         />
-        {/* <div className={classnames('base__tooltip', tooltipClass)} ref={tooltipRef} /> */}
-      </div>
+        /* <div className={classnames('base__tooltip', tooltipClass)} ref={tooltipRef} /> */
+      /* </div> */
     )
   }
 
