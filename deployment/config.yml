@@ -17,13 +17,13 @@ spec:
       workingDir: /app/api
       env:
         - name: SMIC_PORT
-          value: 80
+          value: 8080
       image: randombenj/hslu-wipro-smic-api
       volumeMounts:
         - mountPath: /app/api/database.db
           name: database
       ports:
-        - containerPort: 80
+        - containerPort: 8080
           hostPort: 8080
           protocol: TCP
 
@@ -54,12 +54,12 @@ spec:
       workingDir: /
 
     - name: web
-      args: ["-s", "build"]
+      args: ["-s", "build", "-l", "8888"]
       command:
         - serve
       image: randombenj/hslu-wipro-smic-web
       ports:
-        - containerPort: 5000
+        - containerPort: 8888
           hostPort: 8888
           protocol: TCP
 
