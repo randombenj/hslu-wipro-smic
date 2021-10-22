@@ -1,4 +1,4 @@
-FROM python:3.10 AS base
+FROM python:3.9 AS base
 
 # configure docker container
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -17,8 +17,8 @@ FROM base AS builder
 RUN pip install poetry==1.1.11
 
 # Copy the library source code
-COPY api/pyproject.toml api/poetry.lock /app/
-COPY datastore /app/
+COPY api/pyproject.toml api/poetry.lock /app/$APP/
+COPY datastore/ /app/datastore
 
 # Install the application
 WORKDIR /app/$APP
@@ -29,9 +29,9 @@ RUN poetry install --no-root --no-ansi --no-dev
 FROM base AS production
 
 # Copy the build artifact
-COPY --from=builder /app /app/$APP
-COPY $APP/api /app/$APP
+COPY --from=builder /app /app
+COPY $APP /app/$APP
 
 WORKDIR /app/$APP
 ENTRYPOINT [".venv/bin/python3"]
-CMD ["-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "80"]
+CMD ["-m","api", "--host", "0.0.0.0", "--port", "80"]

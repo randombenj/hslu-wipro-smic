@@ -17,8 +17,8 @@ FROM base AS builder
 RUN pip install poetry==1.1.11
 
 # Copy the library source code
-COPY api/pyproject.toml api/poetry.lock /app/
-COPY datastore /app
+COPY dataingress/pyproject.toml dataingress/poetry.lock /app/$APP/
+COPY datastore /app/datastore
 
 # Install the application
 WORKDIR /app/$APP
@@ -29,8 +29,8 @@ RUN poetry install --no-root --no-ansi --no-dev
 FROM base AS production
 
 # Copy the build artifact
-COPY --from=builder /app /app/$APP
-COPY $APP/dataingress /app/$APP
+COPY --from=builder /app /app
+COPY $APP /app/$APP
 
 WORKDIR /app/$APP
 ENTRYPOINT [".venv/bin/python3"]
