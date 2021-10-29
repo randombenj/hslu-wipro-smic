@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 from sqlmodel import SQLModel, create_engine, Session
 from datetime import datetime
-from datastore.model import Meter, Measurement
-
+from datastore.model import Label, LabelAssignment, Meter, Measurement
+from pydantic import BaseModel
 
 SQLITE_FILE_NAME = "database.db"
 sqlite_url = f"sqlite:///{SQLITE_FILE_NAME}"
@@ -45,20 +45,67 @@ def read_measurements(meter_id: int):
         return measurements
 
 
+class LabelAssignmentPostData(BaseModel):
+    label_id: int
+    start_time: datetime
+    end_time: datetime
+
+
+@app.post("/meters/{meter_id}/labels")
+def assign_label(meter_id: int, data: LabelAssignmentPostData):
+    with Session(engine) as session:
+        assigmnet = LabelAssignment(meter_id=meter_id,
+                                label_id=data.label_id,
+                                start_time=data.start_time,
+                                end_time=data.end_time)
+        session.add(assigmnet)
+        return "Label assigned successfuly!"
+
+
+# @app.get("/meters/{meter_id}/labels")
+# def get_assigned_labels(meter_id: int):
+#     with Session(engine) as session:
+#         labels = session.query(Label).filter(
+#             Label.meter_id == meter_id).all()
+#         return labels
+
+@app.get("/labels/assignments")
+def get_assigned_labels():
+    with Session(engine) as session:
+        assignments = session.query(LabelAssignment).all()
+        return assignments
+
+@app.get("/labels")
+def get_labels():
+    with Session(engine) as session:
+        labels = session.query(Label).all()
+        return labels
+
+
 @app.post("/db/setDefaults")
 def set_defaults():
     with Session(engine) as session:
         session.query(Meter).delete()
         session.query(Measurement).delete()
+        session.query(Label).delete()
+        session.query(LabelAssignment).delete()
         meter1 = Meter(serial_number="Meter one", id=1)
         meter2 = Meter(serial_number="Meter two", id=2)
-        for i in range(0,59):
+        for i in range(0, 59):
             session.add(Measurement(meter_id=meter1.id, voltage_phase_1=10+i,
-                                   voltage_phase_2=(i*i)%230, voltage_phase_3=30, capture_time=datetime(2020, 1, 1, 0, 0, i)))
-   
+                                    voltage_phase_2=(i*i) % 230, voltage_phase_3=30, capture_time=datetime(2020, 1, 1, 0, 0, i)))
+
         session.add(meter1)
         session.add(meter2)
+
+        label1 = Label(name="Label one", id=1)
+        label2 = Label(name="Label two", id=2)
+        ass1 = LabelAssignment(meter_id=meter1.id, label_id=label1.id, start_time=datetime(2020, 1, 1, 0, 0, 0), end_time=datetime(2020, 1, 1, 0, 0, 10))
+        session.add(label1)
+        session.add(label2)
+        session.add(ass1)
         session.commit()
+        return "Default set successfuly!"
 
 
 if __name__ == "__main__":
