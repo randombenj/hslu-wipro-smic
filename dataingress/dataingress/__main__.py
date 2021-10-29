@@ -52,7 +52,8 @@ class SMICIngress:
                 voltage_phase_1=data["voltage_phase_1"],
                 voltage_phase_2=data["voltage_phase_2"],
                 voltage_phase_3=data["voltage_phase_3"],
-                meter_id=meter.id
+                meter_id=meter.id,
+                capture_time=data["capture_time"],
             )
             session.add(measurement)
             session.commit()
