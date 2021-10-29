@@ -1,6 +1,6 @@
 import json
 
-from utils import await_data_request
+from utils import await_data_request,await_data_post
 from behave import given, when, then, step
 
 from fakemeter import SMICCLient
@@ -8,6 +8,7 @@ from fakemeter import SMICCLient
 
 @given("a smart meter client")
 def step_get_client(context):
+    await_data_post("http://localhost:8080/db/clear", None)
     context.client = SMICCLient()
 
 
