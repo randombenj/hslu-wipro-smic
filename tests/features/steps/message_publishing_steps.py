@@ -19,14 +19,12 @@ def __await_data_request(url) -> requests.Response:
         if time.time() > timeout:
             raise TimeoutError("Timed out waiting or api to serve the expected data")
 
-
-
 @given("a smart meter client")
 def step_get_client(context):
     context.client = SMICCLient()
 
 
-@when("we publish some measuring data")
+@when("we publish measurement data")
 def step_publish_data(context):
     context.data = {
         "meter_serial": "1",

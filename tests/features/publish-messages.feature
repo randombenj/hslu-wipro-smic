@@ -1,6 +1,6 @@
-Feature: Metering data Publishing to SMIC
+Feature: Measurement Dasta Publishing to SMIC
 
-  Scenario: Publish some measuring data
+  Scenario: Publish some measurement data
     Given a smart meter client
-     When we publish some measuring data
+     When we publish measurement data
      Then the data is available via the api
