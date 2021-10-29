@@ -84,11 +84,8 @@ def get_labels():
 
 @app.post("/db/setDefaults")
 def set_defaults():
+    clear_db()
     with Session(engine) as session:
-        session.query(Meter).delete()
-        session.query(Measurement).delete()
-        session.query(Label).delete()
-        session.query(LabelAssignment).delete()
         meter1 = Meter(serial_number="Meter one", id=1)
         meter2 = Meter(serial_number="Meter two", id=2)
         for i in range(0, 59):
@@ -107,6 +104,16 @@ def set_defaults():
         session.commit()
         return "Default set successfuly!"
 
+
+@app.post("/db/clear")
+def clear_db():
+    with Session(engine) as session:
+        session.query(Meter).delete()
+        session.query(Measurement).delete()
+        session.query(Label).delete()
+        session.query(LabelAssignment).delete()
+        session.commit()
+        return "DB cleared successfuly!"
 
 if __name__ == "__main__":
     import os
