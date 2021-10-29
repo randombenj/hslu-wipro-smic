@@ -54,12 +54,9 @@ spec:
       workingDir: /
 
     - name: web
-      args: ["-s", "build", "-l", "8888"]
-      command:
-        - serve
       image: randombenj/hslu-wipro-smic-web
       ports:
-        - containerPort: 8888
+        - containerPort: 80
           hostPort: 8888
           protocol: TCP
 

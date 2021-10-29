@@ -29,7 +29,8 @@ class SMICIngress:
         self._client.loop_start()
 
     def __on_message(self, client, userdata, message):
-        logging.info(f"Got `{message.payload.decode()}` from `{message.topic}`")
+        #logging.info(f"Got `{message.payload.decode()}` from `{message.topic}`")
+        print(f"Got `{message.payload.decode()}` from `{message.topic}`")
         data = json.loads(message.payload.decode())
         # FIXME: decouple message handling and db inserting ...
         with Session(engine) as session:

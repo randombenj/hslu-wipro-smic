@@ -10,7 +10,7 @@ import Grid from '@mui/material/Grid';
 function App() {
 
   return (
-    <Provider url="http://localhost:8080/" options={{ cacheLife: 0, cachePolicy: CachePolicies.NO_CACHE }}>
+    <Provider url="http://localhost:8888/api/" options={{ cacheLife: 0, cachePolicy: CachePolicies.NO_CACHE }}>
       <Box sx={{ flexGrow: 1 }}>
         <AppBar position="static">
           <Toolbar>
