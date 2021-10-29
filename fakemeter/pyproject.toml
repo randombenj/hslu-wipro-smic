@@ -8,6 +8,9 @@ authors = ["Your Name <you@example.com>"]
 python = "^3.8"
 paho-mqtt = "^1.6.1"
 
+[tool.poetry.scripts]
+fakemeter = 'fakemeter.__main__:run'
+
 [tool.poetry.dev-dependencies]
 
 [build-system]
