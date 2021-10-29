@@ -40,7 +40,8 @@ def read_meter(meter_id: int):
 @app.get("/meters/{meter_id}/measurements")
 def read_measurements(meter_id: int):
     with Session(engine) as session:
-        measurements = session.query(Measurement).filter(Measurement.meter_id == meter_id).all()
+        measurements = session.query(Measurement).filter(
+            Measurement.meter_id == meter_id).all()
         return measurements
 
 
@@ -51,11 +52,12 @@ def set_defaults():
         session.query(Measurement).delete()
         meter1 = Meter(serial_number="Meter one", id=1)
         meter2 = Meter(serial_number="Meter two", id=2)
-        measurement1 = Measurement(meter_id=meter1.id, voltage_phase_1=10,
-                                   voltage_phase_2=20, voltage_phase_3=30, capture_time=datetime.now())
+        for i in range(0,59):
+            session.add(Measurement(meter_id=meter1.id, voltage_phase_1=10+i,
+                                   voltage_phase_2=(i*i)%230, voltage_phase_3=30, capture_time=datetime(2020, 1, 1, 0, 0, i)))
+   
         session.add(meter1)
         session.add(meter2)
-        session.add(measurement1)
         session.commit()
 
 
@@ -64,6 +66,6 @@ if __name__ == "__main__":
     import uvicorn
 
     host = os.getenv("SMIC_HOST", "0.0.0.0")
-    port = int(os.getenv("SMIC_PORT", 8000))
+    port = int(os.getenv("SMIC_PORT", 8080))
 
     uvicorn.run(app, host=host, port=port)

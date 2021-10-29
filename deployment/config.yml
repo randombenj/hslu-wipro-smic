@@ -10,61 +10,69 @@ metadata:
   name: hslu-wipro-smic
 spec:
   containers:
+    - name: api
+      command:
+        - .venv/bin/python3
+      args: [-m, api]
+      workingDir: /app/api
+      env:
+        - name: SMIC_PORT
+          value: 8080
+      image: randombenj/hslu-wipro-smic-api
+      volumeMounts:
+        - mountPath: /app/api/database.db
+          name: database
+      ports:
+        - containerPort: 8080
+          hostPort: 8080
+          protocol: TCP
 
-  - name: api
-    command:
-    - .venv/bin/python3
-    args: [-m, api]
-    workingDir: /app/api
-    env:
-    - name: SMIC_PORT
-      value: 80
-    image: randombenj/hslu-wipro-smic-api
-    volumeMounts:
-    - mountPath: /app/api/database.db
-      name: database
-    ports:
-    - containerPort: 80
-      hostPort: 8080
-      protocol: TCP
+    - name: dataingress
+      command:
+        - .venv/bin/python3
+      args: [-m, dataingress]
+      image: randombenj/hslu-wipro-smic-dataingress
+      volumeMounts:
+        - mountPath: /app/dataingress/database.db
+          name: database
+      workingDir: /app/dataingress
 
-  - name: dataingress
-    command:
-    - .venv/bin/python3
-    args: [-m, dataingress]
-    image: randombenj/hslu-wipro-smic-dataingress
-    volumeMounts:
-    - mountPath: /app/dataingress/database.db
-      name: database
-    workingDir: /app/dataingress
+    - name: mqtt
+      command:
+        - /docker-entrypoint.sh
+      args: [/usr/sbin/mosquitto, -c, /mosquitto/config/mosquitto.conf]
+      image: docker.io/library/eclipse-mosquitto:latest
+      volumeMounts:
+        - mountPath: /mosquitto/config/mosquitto.conf
+          name: mqtt-config
+      ports:
+        - containerPort: 1883
+          hostPort: 1883
+        - containerPort: 9001
+          hostPort: 9001
+          protocol: TCP
+      workingDir: /
 
-  - name: mqtt
-    command:
-    - /docker-entrypoint.sh
-    args: [/usr/sbin/mosquitto, -c, /mosquitto/config/mosquitto.conf]
-    image: docker.io/library/eclipse-mosquitto:latest
-    volumeMounts:
-    - mountPath: /mosquitto/config/mosquitto.conf
-      name: mqtt-config
-    ports:
-    - containerPort: 1883
-      hostPort: 1883
-    - containerPort: 9001
-      hostPort: 9001
-      protocol: TCP
-    workingDir: /
+    - name: web
+      args: ["-s", "build", "-l", "8888"]
+      command:
+        - serve
+      image: randombenj/hslu-wipro-smic-web
+      ports:
+        - containerPort: 8888
+          hostPort: 8888
+          protocol: TCP
 
   dnsConfig: {}
   restartPolicy: Always
 
   volumes:
-  - name: database
-    hostPath:
-      path: data/database.db
+    - name: database
+      hostPath:
+        path: data/database.db
 
-  - name: mqtt-config
-    hostPath:
-      path: deployment/mosquitto.conf
+    - name: mqtt-config
+      hostPath:
+        path: deployment/mosquitto.conf
 
 status: {}
-
