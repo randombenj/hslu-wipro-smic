@@ -11,5 +11,5 @@ can build them by running:
 
 ```sh
 make docker
-podman play kube deployment/config.yml
+make run
 ```

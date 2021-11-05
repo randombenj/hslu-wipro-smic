@@ -23,7 +23,7 @@ def on_startup():
     create_db_and_tables()
 
 
-@app.get("/meters/")
+@app.get("/meters")
 def read_usage():
     with Session(engine) as session:
         meters = session.query(Meter).all()

@@ -8,12 +8,10 @@ environment (in the root of the project):
 ```sh
 # spin up the instance
 make docker
-podman play kube deployment/config.yml
+make run
 
 # setup the python environment
 poetry install
-poetry run -- python -m behave
+poetry run python -m behave
 ```
-
-After this
 
