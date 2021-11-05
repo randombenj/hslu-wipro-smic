@@ -12,6 +12,6 @@ make run
 
 # setup the python environment
 poetry install
-poetry run python -m behave
+poetry run pytest --gherkin-terminal-reporter -vvv
 ```
 

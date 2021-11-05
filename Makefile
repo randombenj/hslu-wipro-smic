@@ -7,3 +7,8 @@ docker:
 run:
 	podman pod rm -f hslu-wipro-smic || true
 	podman play kube deployment/config.yml
+
+test:
+	cd tests;\
+	poetry install;\
+	poetry run pytest --gherkin-terminal-reporter -vvv;
