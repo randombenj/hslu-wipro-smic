@@ -1,12 +1,16 @@
-import useFetch from "use-http";
+import useFetch, { CachePolicies } from "use-http";
 import { Measurement } from "../model/measurement";
 import { Meter } from "../model/meter";
+import {Data } from "../data"
 
 export function useGetMeasurements(meterId: number) {
-    return useFetch<Measurement[]>(`/meters/${meterId}/measurements`, { method: "GET" }, []);
+    return useFetch<Measurement[]>(`/meters/${meterId}/measurements`, { 
+        method: "GET",
+        cachePolicy: CachePolicies.NETWORK_ONLY,
+    }, [meterId]);
 
 }
 
 export function useGetMeters() {
-    return useFetch<Meter[]>("/meters", { method: "GET" }, []);
+    return useFetch<Meter[]>(`/meters`, { method: "GET" }, []);
 }

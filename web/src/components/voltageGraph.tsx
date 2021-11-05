@@ -2,27 +2,22 @@ import { Data } from "../data";
 import LineChart from "./lineChart";
 import { useGetMeasurements } from '../hooks/meters'
 import useWindowDimensions from "../hooks/windowDimensions";
+import { useEffect, useState } from "react";
+import Paper from '@mui/material/Paper';
+interface Props {
+    dataPoints: Data;
+}
 
-
-
-const VoltageGraph = () => {
-    const windowDimensions = useWindowDimensions();
-
+const VoltageGraph = (props: Props) => {
     const top = 80;
     const bottom = 80;
     const left = 60;
     const right = 20;
-    const width = windowDimensions.width - left - right;
+    const width = 500;
     const height = width;
-    const {
-        loading,
-        error,
-        data,
-    } = useGetMeasurements(1);
-    if (data) {
-        const ddata = new Data(data);
-        console.log(ddata);
-        return (
+
+    return (
+        <Paper elevation={3} style={{ width: width + left + right }}>
             <LineChart
                 svgProps={{
                     margin: { top, bottom, left, right },
@@ -34,15 +29,11 @@ const VoltageGraph = () => {
                     xLabel: 'Time',
                     yLabel: 'Voltage',
                 }}
-                data={ddata}
+                data={props.dataPoints}
                 strokeWidth={4}
             ></LineChart>
-        )
-    }
-    else if (loading) return <p>Loading...</p>;
-    else
-        if (error) return <p>Error: {error.message}</p>;
-        else return <p>No data</p>;
+        </Paper>
+    )
 
 }
 
