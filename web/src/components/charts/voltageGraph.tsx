@@ -1,21 +1,22 @@
-import { Data } from "../data";
-import LineChart from "./lineChart";
-import { useGetMeasurements } from '../hooks/meters'
-import useWindowDimensions from "../hooks/windowDimensions";
-import { useEffect, useState } from "react";
+
+import LineChart, { Line } from "./lineChart";
 import Paper from '@mui/material/Paper';
-interface Props {
-    dataPoints: Data;
+import { mapMeasurementsToVoltageLines } from "../../VoltageData";
+import { Measurement } from "../../model/measurement";
+
+
+interface porps {
+    measurements: Measurement[]
 }
 
-const VoltageGraph = (props: Props) => {
+const VoltageGraph = (props: porps) => {
     const top = 80;
     const bottom = 80;
     const left = 60;
     const right = 20;
     const width = 500;
     const height = width;
-
+    const lines = mapMeasurementsToVoltageLines(props.measurements);
     return (
         <Paper elevation={3} style={{ width: width + left + right }}>
             <LineChart
@@ -29,12 +30,10 @@ const VoltageGraph = (props: Props) => {
                     xLabel: 'Time',
                     yLabel: 'Voltage',
                 }}
-                data={props.dataPoints}
+                lines={lines}
                 strokeWidth={4}
             ></LineChart>
         </Paper>
     )
-
 }
-
 export default VoltageGraph;

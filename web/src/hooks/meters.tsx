@@ -1,7 +1,6 @@
 import useFetch, { CachePolicies } from "use-http";
 import { Measurement } from "../model/measurement";
 import { Meter } from "../model/meter";
-import {Data } from "../data"
 
 export function useGetMeasurements(meterId: number) {
     return useFetch<Measurement[]>(`/meters/${meterId}/measurements`, { 

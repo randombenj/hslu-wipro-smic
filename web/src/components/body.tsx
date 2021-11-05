@@ -1,4 +1,4 @@
-import VoltageGraph from './voltageGraph';
+import VoltageGraph from './charts/voltageGraph';
 import Box from '@mui/material/Box';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar'
@@ -6,9 +6,7 @@ import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import useFilter from './filter';
 import { useGetMeasurements } from '../hooks/meters'
-import useWindowDimensions from "../hooks/windowDimensions";
-import { useEffect, useState } from "react";
-import { Data } from "../data";
+import { mapMeasurementsToVoltageLines } from "../VoltageData";
 
 const Body = () => {
   const [meterId, filter] = useFilter();
@@ -18,11 +16,10 @@ const Body = () => {
     error,
     data,
   } = useGetMeasurements(meterId.meterId);
-  let points = new Data([]);
-  if (data) {
-    points = new Data(data);
+  if (!data) {
+    data = [];
   }
-  const voltageGraph = <VoltageGraph dataPoints={points}></VoltageGraph>
+  const voltageGraph = <VoltageGraph measurements={data}></VoltageGraph>
 
   return <Box sx={{ flexGrow: 1 }}>
     <AppBar position="static">
