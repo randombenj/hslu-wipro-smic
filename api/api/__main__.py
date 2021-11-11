@@ -38,10 +38,16 @@ def read_meter(meter_id: int):
 
 
 @app.get("/meters/{meter_id}/measurements")
-def read_measurements(meter_id: int):
+def read_measurements(meter_id: int, start_date: datetime = None, end_date: datetime = None):
     with Session(engine) as session:
-        measurements = session.query(Measurement).filter(
-            Measurement.meter_id == meter_id).all()
+        query = session.query(Measurement).filter(
+            Measurement.meter_id == meter_id)
+        if start_date:
+            query = query.filter(Measurement.capture_time >= start_date)
+        if end_date:
+            query = query.filter(Measurement.capture_time <= end_date)
+
+        measurements = query.all()
         return measurements
 
 
