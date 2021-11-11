@@ -24,7 +24,7 @@ function useSelectMeter(): [number, JSX.Element] {
             labelId="select-meter-label"
             id="select-meter"
             value={value}
-            label="Data"
+            label="VoltageData"
             onChange={e => setValue(e.target.value)}
         >
             {

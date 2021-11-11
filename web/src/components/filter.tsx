@@ -17,12 +17,12 @@ function useFilter(): [FilterData, JSX.Element] {
     const input = <Box>
 
         <FormControl style={{ width: "200px", margin: "10px" }}>
-            <InputLabel id="demo-simple-select-label">Data</InputLabel>
+            <InputLabel id="demo-simple-select-label">VoltageData</InputLabel>
             <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
                 value={value}
-                label="Data"
+                label="VoltageData"
                 onChange={e => setValue(e.target.value)}
             >
                 <MenuItem value="voltage">Voltage</MenuItem>
