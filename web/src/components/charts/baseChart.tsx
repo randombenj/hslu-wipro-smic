@@ -13,14 +13,13 @@ interface BaseChartPropsType {
   lines: Line[];
   svgProps: any;
   [x: string]: any;
-
 }
 
 const BaseChart = (drawChart: any, extraProps: any) => {
 
   function Chart(props: BaseChartPropsType) {
     const svgRef = React.createRef<SVGSVGElement>();
-    const { axisProps, lines, svgProps } = props;
+    const { axisProps, lines, svgProps, ...restProps } = props;
 
     const { margin, width, height } = svgProps;
 
@@ -81,6 +80,7 @@ const BaseChart = (drawChart: any, extraProps: any) => {
         xScale,
         yScale,
         ...svgProps,
+        ...restProps,
       });
 
       //   drawTooltip({
