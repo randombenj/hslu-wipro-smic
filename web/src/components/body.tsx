@@ -15,7 +15,7 @@ const Body = () => {
     loading,
     error,
     data,
-  } = useGetMeasurements(filterData.meterId);
+  } = useGetMeasurements(filterData.meterId, filterData.startDate, filterData.endDate);
   if (!data) {
     data = [];
   }
