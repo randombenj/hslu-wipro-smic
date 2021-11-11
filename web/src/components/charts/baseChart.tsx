@@ -3,10 +3,7 @@ import React, { useEffect } from 'react';
 import * as d3 from 'd3';
 import drawAxis from './axis';
 import { Line } from './lineChart';
-import { Point } from '../../VoltageData';
-// import drawTooltip from './tooltip';
-
-// import './index.scss';
+import { Point } from '../../model/Point';
 
 interface BaseChartPropsType {
   axisProps: any;
@@ -28,18 +25,14 @@ const BaseChart = (drawChart: any, extraProps: any) => {
       allPoints.push(...line.points);
     });
 
-    const yMinValue = d3.min(allPoints, (d: Point) => d[1]) as number;
-    const yMaxValue = d3.max(allPoints, (d: Point) => d[1]) as number;
+    const { xMinValue, xMaxValue, yMaxValue }: { xMinValue: Date; xMaxValue: Date; yMaxValue: number; } = calcMinMax(allPoints);
 
-    const xMinValue = d3.min(allPoints, (d: Point) => d[0]) as number;
-    const xMaxValue = d3.max(allPoints, (d: Point) => d[0]) as number;
-
-    let xScale: any = d3
-      .scaleLinear()
+    let xScale = d3
+      .scaleTime()
       .domain([xMinValue, xMaxValue])
       .range([0, width]);
 
-    let yScale: any = d3
+    let yScale = d3
       .scaleLinear()
       .range([height, 0])
       .domain([0, yMaxValue]);
@@ -82,18 +75,6 @@ const BaseChart = (drawChart: any, extraProps: any) => {
         ...svgProps,
         ...restProps,
       });
-
-      //   drawTooltip({
-      //     useScaleBands,
-      //     svgRef,
-      //     tooltipRef,
-      //     data,
-      //     xScale,
-      //     yScale,
-      //     findHoverData,
-      //     ...svgProps,
-      //     ...restProps,
-      //   });
     }
     return (
       <svg
@@ -109,3 +90,18 @@ const BaseChart = (drawChart: any, extraProps: any) => {
   return Chart;
 }
 export default BaseChart;
+
+function calcMinMax(allPoints: Point[]) {
+  let yMinValue: number = 0;
+  let yMaxValue: number = 0;
+  let xMinValue: Date = new Date(0);
+  let xMaxValue: Date = new Date(0);
+  if (allPoints.length > 0) {
+    yMinValue = d3.min(allPoints, (d: Point) => d[1]) as number;
+    yMaxValue = d3.max(allPoints, (d: Point) => d[1]) as number;
+
+    xMinValue = allPoints.reduce((a, b) => a[0] < b[0] ? a : b)[0];
+    xMaxValue = allPoints.reduce((a, b) => a[0] > b[0] ? a : b)[0];
+  }
+  return { xMinValue, xMaxValue, yMaxValue };
+}

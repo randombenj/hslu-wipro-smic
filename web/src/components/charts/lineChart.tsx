@@ -3,14 +3,15 @@
 import BaseChart from './baseChart';
 import classnames from 'classnames';
 import * as d3 from 'd3';
-import { Point } from '../../VoltageData';
+import { Point } from '../../model/Point';
+import { ScaleLinear, ScaleTime } from 'd3';
 
 
 export interface LineChartsPropsType {
     svgRef: any;
     lines: Line[];
-    xScale: any;
-    yScale: any;
+    xScale: ScaleTime<number, number, never>;
+    yScale: ScaleLinear<number, number, never>;
     width: any;
     height: any;
     margin: any;
@@ -40,14 +41,14 @@ function drawLineChart(props: LineChartsPropsType) {
     const svg = d3.select(svgRef.current).select('g');
     const d3Line = d3
         .line()
-        .x((d: Point) => xScale(d[0]))
-        .y((d: Point) => yScale(d[1]))
+        .x((d: [number, number]) => xScale(d[0]))
+        .y((d: [number, number]) => yScale(d[1]))
         .curve(d3.curveMonotoneX);
 
     lines.forEach(line => {
         svg
             .append('path')
-            .datum(line.points)
+            .datum(line.points as any)
             .attr('fill', 'none')
             .attr('stroke-width', strokeWidth)
             .attr('stroke', line.color)

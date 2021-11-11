@@ -1,7 +1,7 @@
 
 import LineChart from "./lineChart";
 import Paper from '@mui/material/Paper';
-import { mapMeasurementsToVoltageLines } from "../../model/VoltageData";
+import { mapMeasurementsToPowerLine } from '../../model/PowerData'
 import { Measurement } from "../../model/Measurement";
 
 
@@ -9,14 +9,14 @@ interface porps {
     measurements: Measurement[]
 }
 
-const VoltageGraph = (props: porps) => {
+const PowerGraph = (props: porps) => {
     const top = 80;
     const bottom = 80;
     const left = 60;
     const right = 20;
     const width = 500;
     const height = width;
-    const lines = mapMeasurementsToVoltageLines(props.measurements);
+    const lines = [mapMeasurementsToPowerLine(props.measurements)];
     return (
         <Paper elevation={3} style={{ width: width + left + right }}>
             <LineChart
@@ -28,7 +28,7 @@ const VoltageGraph = (props: porps) => {
 
                 axisProps={{
                     xLabel: 'Time',
-                    yLabel: 'Voltage',
+                    yLabel: 'Power',
                 }}
                 lines={lines}
                 strokeWidth={4}
@@ -36,4 +36,4 @@ const VoltageGraph = (props: porps) => {
         </Paper>
     )
 }
-export default VoltageGraph;
+export default PowerGraph;

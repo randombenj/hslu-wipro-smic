@@ -1,8 +1,8 @@
-import { Line } from "./components/charts/lineChart";
-import { Measurement } from "./model/measurement";
+import { Line } from "../components/charts/lineChart";
+import { Measurement } from "./Measurement";
+import { Point } from "./Point";
 
 
-export type Point = [number, number];
 class VoltageLine implements Line {
     constructor(public points: Point[], public color: string) {
     }
@@ -14,7 +14,7 @@ export function mapMeasurementsToVoltageLines(measurements: Measurement[]): Line
     let phase2_points: Point[] = [];
     let phase3_points: Point[] = [];
     measurements.forEach(measurement => {
-        const timestamp = new Date(measurement.capture_time).getSeconds();
+        const timestamp = new Date(measurement.capture_time);
         phase1_points.push([timestamp, measurement.voltage_phase_1]);
         phase2_points.push([timestamp, measurement.voltage_phase_2]);
         phase3_points.push([timestamp, measurement.voltage_phase_3]);

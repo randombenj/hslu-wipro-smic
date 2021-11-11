@@ -1,4 +1,5 @@
 import VoltageGraph from './charts/voltageGraph';
+import PowerGraph from './charts/powerGraph';
 import Box from '@mui/material/Box';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar'
@@ -6,20 +7,27 @@ import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import useFilter from './filter';
 import { useGetMeasurements } from '../hooks/meters'
-import { mapMeasurementsToVoltageLines } from "../VoltageData";
 
 const Body = () => {
-  const [meterId, filter] = useFilter();
+  const [filterData, filter] = useFilter();
 
   let {
     loading,
     error,
     data,
-  } = useGetMeasurements(meterId.meterId);
+  } = useGetMeasurements(filterData.meterId);
   if (!data) {
     data = [];
   }
-  const voltageGraph = <VoltageGraph measurements={data}></VoltageGraph>
+  let graph: JSX.Element | null = null;
+  switch (filterData.data) {
+    case ('voltage'):
+      graph = <VoltageGraph measurements={data}></VoltageGraph>
+      break;
+    case ('power'):
+      graph = <PowerGraph measurements={data}></PowerGraph>
+      break;
+  }
 
   return <Box sx={{ flexGrow: 1 }}>
     <AppBar position="static">
@@ -35,7 +43,7 @@ const Body = () => {
           {filter}
         </Grid>
         <Grid item xs={12}>
-          {voltageGraph}
+          {graph}
         </Grid>
       </Grid>
     </div>
