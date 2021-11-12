@@ -3,10 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@date-io/luxon": "^2.11.1",
     "@emotion/react": "^11.5.0",
     "@emotion/styled": "^11.3.0",
     "@mui/icons-material": "^5.0.4",
-    "@mui/material": "^5.0.4",
+    "@mui/lab": "5.0.0-alpha.54",
+    "@mui/material": "^5.1.0",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
@@ -50,6 +52,7 @@
     ]
   },
   "devDependencies": {
-    "@types/d3": "^7.0.0"
+    "@types/d3": "^7.0.0",
+    "@types/luxon": "^2.0.7"
   }
 }

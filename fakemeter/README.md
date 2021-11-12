@@ -6,4 +6,6 @@ poetry install
 poetry run fakemeter [--meter-serial serial] v1 v2 v3 p
 # Example:
 poetry run fakemeter --meter-serial test 230 150 420 69
+# or 
+poetry run python fakemeter/send_recorded_data.py
 ```
