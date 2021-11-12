@@ -10,7 +10,8 @@ import IconButton from '@mui/material/IconButton';
 import Refresh from '@mui/icons-material/Refresh';
 import { useGetMeasurements } from '../hooks/meters'
 import { useState, useEffect } from 'react';
-import useInterval  from '../hooks/interval'
+import useInterval from '../hooks/interval'
+import Stack from '@mui/material/Stack';
 
 const Body = () => {
   const [refetchIndex, setRefetchIndex] = useState(0);
@@ -28,15 +29,18 @@ const Body = () => {
   if (!data) {
     data = [];
   }
-  let graph: JSX.Element | null = null;
-  switch (filterData.data) {
-    case ('voltage'):
-      graph = <VoltageGraph measurements={data}></VoltageGraph>
-      break;
-    case ('power'):
-      graph = <PowerGraph measurements={data}></PowerGraph>
-      break;
+  const wrapGraph = (graph:JSX.Element) => {
+    return <Grid item style={{marginRight: 5}}>{graph}</Grid>
   }
+
+  let graphs = [];
+  if (filterData.selectedMeasurements.includes('Voltage')) {
+    graphs.push(wrapGraph(<VoltageGraph measurements={data}></ VoltageGraph>));
+  }
+  if (filterData.selectedMeasurements.includes('Power')) {
+    graphs.push(wrapGraph(<PowerGraph measurements={data}></PowerGraph>));
+  }
+
   useInterval(() => {
     refetch();
   }, 1000)
@@ -50,16 +54,19 @@ const Body = () => {
     </AppBar>
     <div style={{ padding: "10px" }}>
       <Grid container>
-        <Grid item xs={12}>
+        <Grid item>
           {filter}
         </Grid>
-        <IconButton onClick={refetch} >
-          <Refresh />
-        </IconButton>
-        <Grid item xs={12}>
-          {graph}
+
+        <Grid item xs={12} style={{marginTop:5}}>
+          <Stack direction="row" >
+            {graphs}
+          </Stack>
         </Grid>
       </Grid>
+      <IconButton onClick={refetch} >
+          <Refresh />
+        </IconButton>
     </div>
   </Box >
 }
