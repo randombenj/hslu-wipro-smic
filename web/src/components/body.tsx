@@ -9,7 +9,8 @@ import useFilter from './filter';
 import IconButton from '@mui/material/IconButton';
 import Refresh from '@mui/icons-material/Refresh';
 import { useGetMeasurements } from '../hooks/meters'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import useInterval  from '../hooks/interval'
 
 const Body = () => {
   const [refetchIndex, setRefetchIndex] = useState(0);
@@ -36,7 +37,9 @@ const Body = () => {
       graph = <PowerGraph measurements={data}></PowerGraph>
       break;
   }
-
+  useInterval(() => {
+    refetch();
+  }, 1000)
   return <Box sx={{ flexGrow: 1 }}>
     <AppBar position="static">
       <Toolbar>
