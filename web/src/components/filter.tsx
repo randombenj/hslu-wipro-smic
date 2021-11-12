@@ -16,11 +16,11 @@ interface FilterData {
     endDate: DateTime | null;
 }
 
-function useFilter(initialStartDate: DateTime | null = null, initialEndDate: DateTime | null = null): [FilterData, JSX.Element] {
+function useFilter(initialStartDate: DateTime | null = null, initialEndDate: DateTime | null = null, refetchIndex:number): [FilterData, JSX.Element] {
     const [value, setValue] = React.useState("voltage");
     const [startDate, setStartDate] = React.useState<DateTime | null>(initialStartDate);
     const [endDate, setEndDate] = React.useState<DateTime | null>(initialEndDate);
-    const [meterId, selectMeter] = useSelectMeter();
+    const [meterId, selectMeter] = useSelectMeter(refetchIndex);
     const input = <Box>
 
         <FormControl style={{ width: "200px", margin: "10px" }}>

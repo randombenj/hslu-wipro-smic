@@ -6,12 +6,12 @@ import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { useGetMeters } from '../hooks/meters';
 
-function useSelectMeter(): [number, JSX.Element] {
+function useSelectMeter(refetchIndex:number): [number, JSX.Element] {
     const {
         loading,
         error,
         data
-    } = useGetMeters();
+    } = useGetMeters(refetchIndex);
     let menuItems = [<MenuItem value="">No meters fetched</MenuItem>];
     const [value, setValue] = React.useState("1");
     if (data) {

@@ -6,16 +6,24 @@ import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import useFilter from './filter';
+import IconButton from '@mui/material/IconButton';
+import Refresh from '@mui/icons-material/Refresh';
 import { useGetMeasurements } from '../hooks/meters'
+import { useState } from 'react';
 
 const Body = () => {
-  const [filterData, filter] = useFilter();
+  const [refetchIndex, setRefetchIndex] = useState(0);
+  const [filterData, filter] = useFilter(null, null, refetchIndex);
+
+  const refetch = () => {
+    setRefetchIndex(refetchIndex + 1);
+  }
 
   let {
     loading,
     error,
     data,
-  } = useGetMeasurements(filterData.meterId, filterData.startDate, filterData.endDate);
+  } = useGetMeasurements(filterData.meterId, filterData.startDate, filterData.endDate, refetchIndex);
   if (!data) {
     data = [];
   }
@@ -42,6 +50,9 @@ const Body = () => {
         <Grid item xs={12}>
           {filter}
         </Grid>
+        <IconButton onClick={refetch} >
+          <Refresh />
+        </IconButton>
         <Grid item xs={12}>
           {graph}
         </Grid>
