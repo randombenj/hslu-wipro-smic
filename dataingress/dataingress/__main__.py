@@ -33,45 +33,47 @@ class SMICIngress:
         print(f"Got `{message.payload.decode()}` from `{message.topic}`")
         data = json.loads(message.payload.decode())
         # FIXME: decouple message handling and db inserting ...
-        with Session(engine) as session:
-            # get or insert meter
-            meter = session.exec(
-                select(Meter).where(
-                    Meter.serial_number == data["meter_serial"])
-            ).all()
-            if len(meter) > 0:
-                meter = meter[0]
-            else:
-                meter = Meter(
-                    serial_number=data["meter_serial"]
+        try:
+            with Session(engine) as session:
+                # get or insert meter
+                meter = session.exec(
+                    select(Meter).where(
+                        Meter.serial_number == data["meter_serial"])
+                ).all()
+                if len(meter) > 0:
+                    meter = meter[0]
+                else:
+                    meter = Meter(
+                        serial_number=data["meter_serial"]
+                    )
+                    session.add(meter)
+                    session.commit()
+                    session.refresh(meter)  # get id
+                if "capture_time" not in data:
+                    raise Exception("capture_time not provided")
+                # insert data
+                measurement = Measurement(
+                    meter_id=meter.id,
+                    capture_time=data["capture_time"],
+                    voltage_phase_1=data.get("voltage_phase_1", 0),
+                    voltage_phase_2=data.get("voltage_phase_2", 0),
+                    voltage_phase_3=data.get("voltage_phase_3", 0),
+                    power=data.get("power", 0),
+                    thd_1=data.get("thd_1", 0),
+                    thd_2=data.get("thd_2", 0),
+                    thd_3=data.get("thd_3", 0),
+                    thd_4=data.get("thd_4", 0),
+                    thd_5=data.get("thd_5", 0),
+                    thd_6=data.get("thd_6", 0),
+                    thd_7=data.get("thd_7", 0),
+                    thd_8=data.get("thd_8", 0),
+                    thd_9=data.get("thd_9", 0),
+                    thd_10=data.get("thd_10", 0),
                 )
-                session.add(meter)
+                session.add(measurement)
                 session.commit()
-                session.refresh(meter)  # get id
-            if "capture_time" not in data:
-                raise Exception("capture_time not provided")
-            # insert data
-            measurement = Measurement(
-                meter_id=meter.id,
-                capture_time=data["capture_time"],
-                voltage_phase_1=data.get("voltage_phase_1", 0),
-                voltage_phase_2=data.get("voltage_phase_2", 0),
-                voltage_phase_3=data.get("voltage_phase_3", 0),
-                power=data.get("power", 0),
-                thd_1=data.get("thd_1", 0),
-                thd_2=data.get("thd_2", 0),
-                thd_3=data.get("thd_3", 0),
-                thd_4=data.get("thd_4", 0),
-                thd_5=data.get("thd_5", 0),
-                thd_6=data.get("thd_6", 0),
-                thd_7=data.get("thd_7", 0),
-                thd_8=data.get("thd_8", 0),
-                thd_9=data.get("thd_9", 0),
-                thd_10=data.get("thd_10", 0),
-            )
-            session.add(measurement)
-            session.commit()
-
+        except Exception as e:
+            logging.warn("Unable to open db", e)
     def __on_connect(self, client, userdata, flags, rc):
         if rc == 0:
             logging.info("Connected to MQTT Broker!")
