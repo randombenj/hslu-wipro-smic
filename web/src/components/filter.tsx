@@ -41,6 +41,9 @@ function useFilter(initialStartDate: DateTime | null = null, initialEndDate: Dat
                         label="Period start"
                         value={startDate}
                         onChange={(newValue) => {
+                            if (newValue){
+                                newValue = newValue.set({hour:0, minute:0, second:0, millisecond:0});
+                            }
                             setStartDate(newValue);
                         }}
                         renderInput={(params) => <TextField {...params} />}
@@ -52,6 +55,9 @@ function useFilter(initialStartDate: DateTime | null = null, initialEndDate: Dat
                         label="Period end"
                         value={endDate}
                         onChange={(newValue) => {
+                            if (newValue){
+                                newValue = newValue.set({hour:23, minute:59, second:59, millisecond:999});
+                            }
                             setEndDate(newValue);
                         }}
                         renderInput={(params) => <TextField {...params} />}
