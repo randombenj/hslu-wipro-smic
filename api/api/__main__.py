@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from sqlmodel import SQLModel, create_engine, Session
+from sqlmodel import SQLModel, create_engine, Session, select
 from datetime import datetime
 from datastore.model import Label, LabelAssignment, Meter, Measurement
 from pydantic import BaseModel
@@ -61,25 +61,20 @@ class LabelAssignmentPostData(BaseModel):
 def assign_label(meter_id: int, data: LabelAssignmentPostData):
     with Session(engine) as session:
         assigmnet = LabelAssignment(meter_id=meter_id,
-                                label_id=data.label_id,
-                                start_time=data.start_time,
-                                end_time=data.end_time)
+                                    label_id=data.label_id,
+                                    start_time=data.start_time,
+                                    end_time=data.end_time)
         session.add(assigmnet)
         return "Label assigned successfuly!"
 
 
-# @app.get("/meters/{meter_id}/labels")
-# def get_assigned_labels(meter_id: int):
-#     with Session(engine) as session:
-#         labels = session.query(Label).filter(
-#             Label.meter_id == meter_id).all()
-#         return labels
-
-@app.get("/labels/assignments")
-def get_assigned_labels():
+@app.get("/meters/{meter_id}/labels")
+def get_assigned_labels(meter_id: int):
     with Session(engine) as session:
-        assignments = session.query(LabelAssignment).all()
-        return assignments
+        labels = session.query(LabelAssignment.start_time, LabelAssignment.end_time, Label.name).filter(
+            LabelAssignment.meter_id == meter_id).join(Label).all()
+        return labels
+
 
 @app.get("/labels")
 def get_labels():
@@ -103,7 +98,8 @@ def set_defaults():
 
         label1 = Label(name="Label one", id=1)
         label2 = Label(name="Label two", id=2)
-        ass1 = LabelAssignment(meter_id=meter1.id, label_id=label1.id, start_time=datetime(2020, 1, 1, 0, 0, 0), end_time=datetime(2020, 1, 1, 0, 0, 10))
+        ass1 = LabelAssignment(meter_id=meter1.id, label_id=label1.id, start_time=datetime(
+            2020, 1, 1, 0, 0, 0), end_time=datetime(2020, 1, 1, 0, 0, 10))
         session.add(label1)
         session.add(label2)
         session.add(ass1)
@@ -120,6 +116,7 @@ def clear_db():
         session.query(LabelAssignment).delete()
         session.commit()
         return "DB cleared successfuly!"
+
 
 if __name__ == "__main__":
     import os
