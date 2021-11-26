@@ -12,7 +12,7 @@ import { useGetMeasurements } from '../hooks/meters'
 import { useState, useEffect } from 'react';
 import useInterval from '../hooks/interval'
 import Stack from '@mui/material/Stack';
-
+import Labels from './labels';
 const Body = () => {
   const [refetchIndex, setRefetchIndex] = useState(0);
   const [filterData, filter] = useFilter(null, null, refetchIndex);
@@ -29,8 +29,8 @@ const Body = () => {
   if (!data) {
     data = [];
   }
-  const wrapGraph = (graph:JSX.Element) => {
-    return <Grid item style={{marginRight: 5}}>{graph}</Grid>
+  const wrapGraph = (graph: JSX.Element) => {
+    return <Grid item style={{ marginRight: 5 }}>{graph}</Grid>
   }
 
   let graphs = [];
@@ -41,9 +41,10 @@ const Body = () => {
     graphs.push(wrapGraph(<PowerGraph measurements={data}></PowerGraph>));
   }
 
+  const labels = Labels(filterData);
   useInterval(() => {
     refetch();
-  }, 1000)
+  }, 10000)
   return <Box sx={{ flexGrow: 1 }}>
     <AppBar position="static">
       <Toolbar>
@@ -58,15 +59,15 @@ const Body = () => {
           {filter}
         </Grid>
 
-        <Grid item xs={12} style={{marginTop:5}}>
+        <Grid item xs={12} style={{ marginTop: 5 }}>
           <Stack direction="row" >
             {graphs}
           </Stack>
         </Grid>
       </Grid>
-      <IconButton onClick={refetch} >
-          <Refresh />
-        </IconButton>
+      <Grid item style={{ marginTop: 5 }}>
+        {labels}
+      </Grid>
     </div>
   </Box >
 }

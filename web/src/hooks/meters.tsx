@@ -1,16 +1,16 @@
+import { DateTime } from "luxon";
 import useFetch, { CachePolicies } from "use-http";
 import { Measurement } from "../model/Measurement";
 import { Meter } from "../model/Meter";
-import { DateTime, ToISOTimeOptions } from 'luxon'
+import formatDate from "./utils";
 
-export function useGetMeasurements(meterId: number, startDate: DateTime | null, endDate: DateTime | null, refetchIndex:number) {
-    const toIsoOptions: ToISOTimeOptions = { suppressMilliseconds: true, includeOffset: false };
+export function useGetMeasurements(meterId: number, startDate: DateTime | null, endDate: DateTime | null, refetchIndex: number) {
     let request = `/meters/${meterId}/measurements`;
     if (startDate) {
-        request += `?start_date=${startDate.toISO(toIsoOptions)}`;
+        request += `?start_date=${formatDate(startDate)}`;
     }
     if (endDate) {
-        request += `&end_date=${endDate.toISO(toIsoOptions)}`;
+        request += `&end_date=${formatDate(endDate)}`;
     }
 
     return useFetch<Measurement[]>(request, {
@@ -20,6 +20,6 @@ export function useGetMeasurements(meterId: number, startDate: DateTime | null, 
 
 }
 
-export function useGetMeters(refetchIndex:number) {
+export function useGetMeters(refetchIndex: number) {
     return useFetch<Meter[]>(`/meters`, { method: "GET" }, [refetchIndex]);
 }

@@ -10,7 +10,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import { Paper, Grid } from '@mui/material';
 
-interface FilterData {
+export interface FilterData {
     meterId: number;
     selectedMeasurements: string[];
     startDate: DateTime | null;
