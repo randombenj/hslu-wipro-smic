@@ -8,7 +8,7 @@ import { useGetMeasurements } from '../hooks/meters'
 import { useState, useMemo } from 'react';
 import Stack from '@mui/material/Stack';
 import Labels from './labels';
-import NewChart from './charts/newChart';
+import SMICChart from './charts/SMICChart';
 import { mapMeasurementsToVoltageLines } from '../model/VoltageData';
 import { mapMeasurementsToPowerLine } from '../model/PowerData';
 import { Line } from '../model/Line';
@@ -73,11 +73,11 @@ const useGetGraphsStack = (filterData: FilterData, measurements: Measurement[]):
   useMemo(() => {
     if (filterData.selectedMeasurements.includes('Voltage')) {
       const voltageLines: Line[] = mapMeasurementsToVoltageLines(measurements);
-      graphs.push(wrapGraph(<NewChart lines={voltageLines} yAxisName="Voltage"></ NewChart>));
+      graphs.push(wrapGraph(<SMICChart lines={voltageLines} yAxisName="Voltage"></ SMICChart>));
     }
     if (filterData.selectedMeasurements.includes('Power')) {
       const powerLine: Line = mapMeasurementsToPowerLine(measurements);
-      graphs.push(wrapGraph(<NewChart lines={[powerLine]} yAxisName="Power"></ NewChart>));
+      graphs.push(wrapGraph(<SMICChart lines={[powerLine]} yAxisName="Power"></ SMICChart>));
     }
     if (filterData.selectedMeasurements.includes('THD')) {
       // graphs.push(wrapGraph(<NewChart measurements={data} yAxisName="THD"></ NewChart>));
