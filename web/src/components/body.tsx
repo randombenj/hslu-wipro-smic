@@ -1,5 +1,3 @@
-import VoltageGraph from './charts/voltageGraph';
-import PowerGraph from './charts/powerGraph';
 import Box from '@mui/material/Box';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar'
@@ -14,6 +12,9 @@ import useInterval from '../hooks/interval'
 import Stack from '@mui/material/Stack';
 import Labels from './labels';
 import NewChart from './charts/newChart';
+import { mapMeasurementsToVoltageLines } from '../model/VoltageData';
+import { mapMeasurementsToPowerLine } from '../model/PowerData';
+import { Line } from '../model/Line';
 
 const Body = () => {
   const [refetchIndex, setRefetchIndex] = useState(0);
@@ -73,13 +74,15 @@ const useGetGraphsStack = (filterData, data) => {
   const graphs = [];
   useMemo(() => {
     if (filterData.selectedMeasurements.includes('Voltage')) {
-      graphs.push(wrapGraph(<VoltageGraph measurements={data}></ VoltageGraph>));
+      const voltageLines:Line[] = mapMeasurementsToVoltageLines(data);
+      graphs.push(wrapGraph(<NewChart lines={voltageLines} yAxisName="Voltage"></ NewChart>));
     }
     if (filterData.selectedMeasurements.includes('Power')) {
-      graphs.push(wrapGraph(<PowerGraph measurements={data}></PowerGraph>));
+      const powerLine:Line = mapMeasurementsToPowerLine(data);
+      graphs.push(wrapGraph(<NewChart lines={[powerLine]} yAxisName="Power"></ NewChart>));
     }
     if (filterData.selectedMeasurements.includes('THD')) {
-      graphs.push(wrapGraph(<NewChart measurements={data}></ NewChart>));
+      // graphs.push(wrapGraph(<NewChart measurements={data} yAxisName="THD"></ NewChart>));
     }
   }, [filterData, data]);
 

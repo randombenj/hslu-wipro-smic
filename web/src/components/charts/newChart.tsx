@@ -1,18 +1,15 @@
 
-import LineChart, { Line } from "./lineChart";
 import Paper from '@mui/material/Paper';
-import { mapMeasurementsToVoltageLines } from "../../model/VoltageData";
-import { Measurement } from "../../model/Measurement";
-import { Svg } from "./baseChart";
 import * as d3 from 'd3';
 import { useEffect } from "react";
 import { DateTime } from "luxon";
 import React from "react";
 import { Point } from "../../model/Point";
-
+import {Line} from '../../model/Line'
 
 interface porps {
-    measurements: Measurement[]
+    lines: Line[];
+    yAxisName: string;
 }
 
 const NewChart = (props: porps) => {
@@ -23,12 +20,13 @@ const NewChart = (props: porps) => {
     const width = 500;
     const height = width;
     const margin = { top, bottom, left, right };
-    const lines = mapMeasurementsToVoltageLines(props.measurements);
+
     const [svg, baseChartElement] = useCreateBase(height, width, margin);
-    const scales = getScales(lines, height, width);
+    const scales = getScales(props.lines, height, width);
     const range = useSelectRangeWithDrag(svg, scales);
-    useDrawAxis(svg, scales, height, width, margin);
-    useDrawLines(svg, lines, scales);
+    useDrawAxis("Time", props.yAxisName, svg, scales, height, width, margin);
+    useDrawLines(svg, props.lines, scales);
+    useDrawLabels(svg, scales, height);
     return (
         <Paper elevation={3} style={{ width: width + left + right }}>
             {baseChartElement}
@@ -37,6 +35,8 @@ const NewChart = (props: porps) => {
     )
 }
 export default NewChart;
+
+type Svg = any;
 
 export const useCreateBase = (width: number, height: number, margin: any): [Svg, JSX.Element] => {
     const svgRef = React.createRef<SVGSVGElement>();
@@ -48,15 +48,15 @@ export const useCreateBase = (width: number, height: number, margin: any): [Svg,
         d3.select(svgRef.current).selectAll('*').remove();
         const svg = d3
             .select(svgRef.current)
-        svg.append("rect")
-            .attr("width", "100%")
-            .attr("height", "100%")
-            .attr("opacity", "0");
-        // svg.append('g');
-        svg
             .attr('width', width + margin.left + margin.right)
             .attr('height', height + margin.top + margin.bottom)
+            .append('g')
             .attr('transform', `translate(${margin.left},${margin.top})`);
+
+        svg.append("rect")
+            .attr("width", width)
+            .attr("height", height)
+            .attr("opacity", "0");
     }, [width, height, margin]);
 
     return [svgRef, element]
@@ -73,7 +73,7 @@ const useDrawLines = (svg: Svg, lines: Line[], scales: Scales | null, strokeWidt
                 .curve(d3.curveMonotoneX);
 
             lines.forEach(line => {
-                d3.select(svg.current)
+                d3.select(svg.current).select('g')
                     .append('path')
                     .datum(line.points as any)
                     .attr('fill', 'none')
@@ -84,7 +84,7 @@ const useDrawLines = (svg: Svg, lines: Line[], scales: Scales | null, strokeWidt
 
             });
         }
-    }, [svg, lines, scales, strokeWidth]);
+    }, [lines, scales, strokeWidth]);
 }
 interface SelectedRange {
     start: DateTime;
@@ -94,7 +94,7 @@ const useSelectRangeWithDrag = (svgRef: Svg, scales: Scales | null): SelectedRan
     const [range, setRange] = React.useState<SelectedRange | null>();
     const [selection, setSelection] = React.useState<any | null>(null)
     useEffect(() => {
-        const svg = d3.select(svgRef.current);
+        const svg = d3.select(svgRef.current).select("g");
         let element = null;
         let previousElement = null;
         let currentY = 0;
@@ -252,10 +252,10 @@ function calcMinMax(allPoints: Point[]) {
     return { xMinValue, xMaxValue, yMaxValue };
 }
 
-const useDrawAxis = (svgRef: Svg, scales: Scales, height: number, width: number, margin) => {
+const useDrawAxis = (xText: string, yText: string, svgRef: Svg, scales: Scales, height: number, width: number, margin) => {
     useEffect(() => {
 
-        const svg = d3.select(svgRef.current);
+        const svg = d3.select(svgRef.current).select('g');
         svg
             .append('g')
             .attr('transform', `translate(0,${height})`)
@@ -263,7 +263,7 @@ const useDrawAxis = (svgRef: Svg, scales: Scales, height: number, width: number,
 
         svg
             .append('g')
-            .call(d3.axisRight(scales.y));
+            .call(d3.axisLeft(scales.y));
 
         svg
             .append('text')
@@ -271,7 +271,7 @@ const useDrawAxis = (svgRef: Svg, scales: Scales, height: number, width: number,
             .attr('text-anchor', 'middle')
             .attr('x', width / 2)
             .attr('y', height + margin.top / 2)
-            .text("x");
+            .text(xText);
 
         svg
             .append('text')
@@ -280,6 +280,30 @@ const useDrawAxis = (svgRef: Svg, scales: Scales, height: number, width: number,
             .attr('x', -height / 2)
             .attr('y', -margin.left / 2)
             .attr('transform', 'rotate(-90)')
-            .text("y");
+            .text(yText);
     }, [scales])
+}
+
+const useDrawLabels = (svgRef: Svg, scales: Scales, height: number) => {
+    const ray = [
+        { start: DateTime.local(2020, 1, 1, 0, 0, 0), end: DateTime.local(2020, 1, 1, 0, 0, 10), color: 'red' },
+        { start: DateTime.local(2020, 1, 1, 0, 0, 5), end: DateTime.local(2020, 1, 1, 0, 0, 9), color: 'blue' },
+        { start: DateTime.local(2020, 1, 1, 0, 0, 15), end: DateTime.local(2020, 1, 1, 0, 0, 21), color: 'green' },
+        { start: DateTime.local(2020, 1, 1, 0, 0, 17), end: DateTime.local(2020, 1, 1, 0, 0, 40), color: 'yellow' },
+        
+    ];
+    useEffect(() => {
+        const svg = d3.select(svgRef.current).select('g');
+        console.log('draw labels');
+        ray.forEach(label => {
+            svg.append('rect')
+                .attr('x', scales.x(label.start))
+                .attr('y', 0)
+                .attr('width', scales.x(label.end) - scales.x(label.start))
+                .attr('height', height)
+                .attr('fill', label.color)
+                .attr('opacity', 0.5);
+        });
+    }, [scales, height, ray]);
+
 }

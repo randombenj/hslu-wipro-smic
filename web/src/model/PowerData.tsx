@@ -1,4 +1,4 @@
-import { Line } from "../components/charts/lineChart";
+import { Line } from "./Line";
 import { Measurement } from "./Measurement";
 import { Point } from "./Point";
 
