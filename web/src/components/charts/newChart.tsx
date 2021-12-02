@@ -178,17 +178,25 @@ const useSelectRangeWithDrag = (svgRef: Svg, scales: Scales | null): SelectedRan
                 }
             }
 
-            const dragStart = (event: PointerEvent) => {
+            const dragStart = (event: DragEvent) => {
                 var p = d3.pointer(event, svg.node());
                 init(p[0], p[1]);
                 removePrevious();
             }
-            const dragMove = (event: PointerEvent) => {
+            const dragMove = (event: DragEvent) => {
                 var p = d3.pointer(event, svg.node());
-                update(p[0], p[1]);
+                let v0 = p[0];
+                let v1 = p[1];
+                if (v1 > 500){
+                    v1 = 500;
+                }
+                if (v0 >500){
+                    v0 = 500;
+                }
+                update(v0, v1);
             }
 
-            const dragEnd = (event: PointerEvent) => {
+            const dragEnd = (event: DragEvent) => {
                 console.log('drag end');
                 var finalAttributes = getCurrentAttributes();
                 if (finalAttributes.x2 - finalAttributes.x1 > 1 && finalAttributes.y2 - finalAttributes.y1 > 1) {
