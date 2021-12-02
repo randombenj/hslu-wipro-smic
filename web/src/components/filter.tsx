@@ -21,7 +21,6 @@ function useFilter(initialStartDate: DateTime | null = null, initialEndDate: Dat
 
     const [selectedMeasurements, selectMeasurementsUi] = useSelectMeasurements();
     const [meterId, selectMeter] = useSelectMeter(refetchIndex);
-    
     const [startDate, setStartDate] = React.useState<DateTime | null>(initialStartDate);
     const [endDate, setEndDate] = React.useState<DateTime | null>(initialEndDate);
 

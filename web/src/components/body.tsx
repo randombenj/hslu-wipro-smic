@@ -9,10 +9,12 @@ import useFilter from './filter';
 import IconButton from '@mui/material/IconButton';
 import Refresh from '@mui/icons-material/Refresh';
 import { useGetMeasurements } from '../hooks/meters'
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import useInterval from '../hooks/interval'
 import Stack from '@mui/material/Stack';
 import Labels from './labels';
+import NewChart from './charts/newChart';
+
 const Body = () => {
   const [refetchIndex, setRefetchIndex] = useState(0);
   const [filterData, filter] = useFilter(null, null, refetchIndex);
@@ -29,22 +31,15 @@ const Body = () => {
   if (!data) {
     data = [];
   }
-  const wrapGraph = (graph: JSX.Element) => {
-    return <Grid item style={{ marginRight: 5 }}>{graph}</Grid>
-  }
 
-  let graphs = [];
-  if (filterData.selectedMeasurements.includes('Voltage')) {
-    graphs.push(wrapGraph(<VoltageGraph measurements={data}></ VoltageGraph>));
-  }
-  if (filterData.selectedMeasurements.includes('Power')) {
-    graphs.push(wrapGraph(<PowerGraph measurements={data}></PowerGraph>));
-  }
+  let graphs = useGetGraphsStack(filterData, data);
+
+
 
   const labels = Labels(filterData);
-  useInterval(() => {
-    refetch();
-  }, 10000)
+  // useInterval(() => {
+  //   refetch();
+  // }, 1000) // this makes the dragging ugly...
   return <Box sx={{ flexGrow: 1 }}>
     <AppBar position="static">
       <Toolbar>
@@ -60,9 +55,7 @@ const Body = () => {
         </Grid>
 
         <Grid item xs={12} style={{ marginTop: 5 }}>
-          <Stack direction="row" >
-            {graphs}
-          </Stack>
+          {graphs}
         </Grid>
       </Grid>
       <Grid item style={{ marginTop: 5 }}>
@@ -71,4 +64,27 @@ const Body = () => {
     </div>
   </Box >
 }
-export default Body
+export default Body;
+
+const wrapGraph = (graph: JSX.Element) => {
+  return <Grid item style={{ marginRight: 5 }}>{graph}</Grid>
+}
+const useGetGraphsStack = (filterData, data) => {
+  const graphs = [];
+  useMemo(() => {
+    if (filterData.selectedMeasurements.includes('Voltage')) {
+      graphs.push(wrapGraph(<VoltageGraph measurements={data}></ VoltageGraph>));
+    }
+    if (filterData.selectedMeasurements.includes('Power')) {
+      graphs.push(wrapGraph(<PowerGraph measurements={data}></PowerGraph>));
+    }
+    if (filterData.selectedMeasurements.includes('THD')) {
+      graphs.push(wrapGraph(<NewChart measurements={data}></ NewChart>));
+    }
+  }, [filterData, data]);
+
+  return <Stack direction="row" >
+    {graphs}
+  </Stack>
+}
+

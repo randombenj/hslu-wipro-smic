@@ -18,7 +18,7 @@ const useSelectMeasurements = (): [string[], JSX.Element] => {
             if (selectedMeasurements.includes(measurement)) {
                 const m = selectedMeasurements;
                 m.splice(m.indexOf(measurement), 1);
-                setSelectedMeasurements(m);
+                setSelectedMeasurements([...m]);
             }
         }
     };

@@ -4,7 +4,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import { useGetMeters } from '../hooks/meters';
-import { useQueryParam, StringParam, withDefault } from 'use-query-params';
+import { useQueryParam, withDefault, NumberParam } from 'use-query-params';
 
 
 function useSelectMeter(refetchIndex: number): [number, JSX.Element] {
@@ -15,7 +15,8 @@ function useSelectMeter(refetchIndex: number): [number, JSX.Element] {
         data
     } = useGetMeters(refetchIndex);
     let menuItems = [<MenuItem value="">No meters fetched</MenuItem>];
-    const [value, setValue] = useQueryParam("meter", withDefault(StringParam, "1"));
+    // const [value, setValue] = useQueryParam("meter", withDefault(NumberParam, 1));
+    const [value, setValue] = React.useState(1);
     if (data) {
         menuItems = data.map(meter => <MenuItem key={meter.id} value={meter.id}>{meter.serial_number}</MenuItem>);
     }
@@ -27,7 +28,9 @@ function useSelectMeter(refetchIndex: number): [number, JSX.Element] {
             id="select-meter"
             value={value}
             label="VoltageData"
-            onChange={e => setValue(e.target.value)}
+            onChange={e =>
+                setValue((e.target.value as any))
+            }
         >
             {
                 menuItems
@@ -35,7 +38,7 @@ function useSelectMeter(refetchIndex: number): [number, JSX.Element] {
         </Select>
     </FormControl>
 
-    return [parseInt(value as any), input];
+    return [value, input];
 }
 
 export default useSelectMeter;
