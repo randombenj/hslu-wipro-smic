@@ -4,7 +4,7 @@ import { FilterData } from './filter';
 import { Grid, Button } from '@mui/material';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { DateTime } from 'luxon';
-import useFetch, { FetchData, Res } from "use-http";
+import useFetch from "use-http";
 import formatDate from "../hooks/utils";
 
 const Labels = (filterData: FilterData) => {

@@ -1,5 +1,5 @@
 import { DateTime } from "luxon";
-import useFetch, { FetchData, Res } from "use-http";
+import useFetch, { Res } from "use-http";
 import Label from "../model/Label";
 import formatDate from "./utils";
 

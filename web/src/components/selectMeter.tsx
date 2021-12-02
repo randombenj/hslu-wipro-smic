@@ -4,7 +4,6 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import { useGetMeters } from '../hooks/meters';
-import { useQueryParam, withDefault, NumberParam } from 'use-query-params';
 
 
 function useSelectMeter(refetchIndex: number): [number, JSX.Element] {

@@ -1,13 +1,9 @@
 import * as React from 'react';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
 import useSelectMeter from './selectMeter';
 import useSelectMeasurements from './selectMeasurement';
 import DatePicker from '@mui/lab/DatePicker';
 import TextField from '@mui/material/TextField';
 import { DateTime } from 'luxon';
-import FormGroup from '@mui/material/FormGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import { Paper, Grid } from '@mui/material';
 
 export interface FilterData {

@@ -3,18 +3,16 @@ import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
-import useFilter from './filter';
-import IconButton from '@mui/material/IconButton';
-import Refresh from '@mui/icons-material/Refresh';
+import useFilter, { FilterData } from './filter';
 import { useGetMeasurements } from '../hooks/meters'
-import { useState, useEffect, useMemo } from 'react';
-import useInterval from '../hooks/interval'
+import { useState, useMemo } from 'react';
 import Stack from '@mui/material/Stack';
 import Labels from './labels';
 import NewChart from './charts/newChart';
 import { mapMeasurementsToVoltageLines } from '../model/VoltageData';
 import { mapMeasurementsToPowerLine } from '../model/PowerData';
 import { Line } from '../model/Line';
+import { Measurement } from '../model/Measurement';
 
 const Body = () => {
   const [refetchIndex, setRefetchIndex] = useState(0);
@@ -70,21 +68,21 @@ export default Body;
 const wrapGraph = (graph: JSX.Element) => {
   return <Grid item style={{ marginRight: 5 }}>{graph}</Grid>
 }
-const useGetGraphsStack = (filterData, data) => {
-  const graphs = [];
+const useGetGraphsStack = (filterData: FilterData, measurements: Measurement[]): JSX.Element => {
+  const graphs: Array<JSX.Element> = [];
   useMemo(() => {
     if (filterData.selectedMeasurements.includes('Voltage')) {
-      const voltageLines:Line[] = mapMeasurementsToVoltageLines(data);
+      const voltageLines: Line[] = mapMeasurementsToVoltageLines(measurements);
       graphs.push(wrapGraph(<NewChart lines={voltageLines} yAxisName="Voltage"></ NewChart>));
     }
     if (filterData.selectedMeasurements.includes('Power')) {
-      const powerLine:Line = mapMeasurementsToPowerLine(data);
+      const powerLine: Line = mapMeasurementsToPowerLine(measurements);
       graphs.push(wrapGraph(<NewChart lines={[powerLine]} yAxisName="Power"></ NewChart>));
     }
     if (filterData.selectedMeasurements.includes('THD')) {
       // graphs.push(wrapGraph(<NewChart measurements={data} yAxisName="THD"></ NewChart>));
     }
-  }, [filterData, data]);
+  }, [filterData, measurements]);
 
   return <Stack direction="row" >
     {graphs}
