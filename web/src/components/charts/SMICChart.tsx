@@ -9,11 +9,13 @@ import { useCreateBase } from './useCreateBase';
 import { useDrawLines } from './useDrawLines';
 import { Margin } from './Margin';
 import { SetRangeType } from './SelectedRange';
+import { LabelAssignment } from '../../hooks/labels';
 
 interface porps {
     lines: Line[];
     yAxisName: string;
     setSelectedRange: SetRangeType;
+    labels: LabelAssignment[];
 }
 
 const SMICChart = (props: porps) => {
@@ -30,7 +32,7 @@ const SMICChart = (props: porps) => {
     const range = useSelectRangeWithDrag(svg, scales, props.setSelectedRange);
     useDrawAxis("Time", props.yAxisName, svg, scales, height, width, margin);
     useDrawLines(svg, props.lines, scales);
-    useDrawLabels(svg, scales, height);
+    useDrawLabels(svg, scales, height, props.labels);
 
     return (
         <Paper elevation={3} style={{ width: width + left + right }}>

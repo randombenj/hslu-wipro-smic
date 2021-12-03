@@ -15,6 +15,7 @@ import { Line } from '../model/Line';
 import { Measurement } from '../model/Measurement';
 import { SelectedRange, SetRangeType } from './charts/SelectedRange';
 import { DateTime } from 'luxon';
+import { LabelAssignment, useGetLabelAssignments } from '../hooks/labels';
 
 const Body = () => {
   const [refetchIndex, setRefetchIndex] = useState(0);
@@ -33,8 +34,11 @@ const Body = () => {
     data = [];
   }
   const [selectedRange, setSelectedRange] = useState<SelectedRange>({ start: DateTime.now(), end: DateTime.now() });
-
-  let graphs = useGetGraphsStack(filterData, data, setSelectedRange);
+  let labelAssignments = useGetLabelAssignments(filterData.meterId).data;
+  if (!labelAssignments) {
+    labelAssignments = [];
+  }
+  let graphs = useGetGraphsStack(filterData, data, setSelectedRange, labelAssignments);
 
 
 
@@ -71,21 +75,21 @@ export default Body;
 const wrapGraph = (graph: JSX.Element) => {
   return <Grid item style={{ marginRight: 5 }}>{graph}</Grid>
 }
-const useGetGraphsStack = (filterData: FilterData, measurements: Measurement[], setRange: SetRangeType): JSX.Element => {
+const useGetGraphsStack = (filterData: FilterData, measurements: Measurement[], setRange: SetRangeType, labels: LabelAssignment[]): JSX.Element => {
   const graphs: Array<JSX.Element> = [];
   useMemo(() => {
     if (filterData.selectedMeasurements.includes('Voltage')) {
       const voltageLines: Line[] = mapMeasurementsToVoltageLines(measurements);
-      graphs.push(wrapGraph(<SMICChart lines={voltageLines} yAxisName="Voltage" setSelectedRange={setRange}></ SMICChart>));
+      graphs.push(wrapGraph(<SMICChart lines={voltageLines} yAxisName="Voltage" setSelectedRange={setRange} labels={labels}></ SMICChart>));
     }
     if (filterData.selectedMeasurements.includes('Power')) {
       const powerLine: Line = mapMeasurementsToPowerLine(measurements);
-      graphs.push(wrapGraph(<SMICChart lines={[powerLine]} yAxisName="Power" setSelectedRange={setRange}></ SMICChart>));
+      graphs.push(wrapGraph(<SMICChart lines={[powerLine]} yAxisName="Power" setSelectedRange={setRange} labels={labels}></ SMICChart>));
     }
     if (filterData.selectedMeasurements.includes('THD')) {
       // graphs.push(wrapGraph(<NewChart measurements={data} yAxisName="THD"></ NewChart>));
     }
-  }, [filterData, measurements]);
+  }, [filterData, measurements, labels]);
 
   return <Stack direction="row" >
     {graphs}

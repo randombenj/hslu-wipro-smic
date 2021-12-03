@@ -1,9 +1,8 @@
 import Paper from '@mui/material/Paper';
-import { useGetLabels, useGetLabelAssignments, useAddLabelAssignment } from '../hooks/labels';
+import { useGetLabels, useGetLabelAssignments } from '../hooks/labels';
 import { FilterData } from './filter';
 import { Grid, Button, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
-import { DateTime } from 'luxon';
 import useFetch from "use-http";
 import formatDate from "../hooks/utils";
 import { SelectedRange } from './charts/SelectedRange';
@@ -12,7 +11,6 @@ import { useState } from 'react';
 const Labels = (filterData: FilterData, selectedRange: SelectedRange) => {
     const labels = useGetLabels().data;
     let labelElements = labels?.map(label => <div>{label.name}</div>)
-    // let {addLabel} = useAddLabelAssignment();
     let labelAssignments = useGetLabelAssignments(filterData.meterId).data;
     let assignments: Array<JSX.Element> = [];
     if (labelAssignments) {
@@ -24,8 +22,8 @@ const Labels = (filterData: FilterData, selectedRange: SelectedRange) => {
     const addLabel = async () => {
         const data = {
             label_id: selectedLabel,
-            start_time: formatDate(selectedRange.start)+"Z",
-            end_time: formatDate(selectedRange.end)+"Z",
+            start_time: formatDate(selectedRange.start) + "Z",
+            end_time: formatDate(selectedRange.end) + "Z",
         };
         await post(`/${filterData.meterId}/labels`, data);
     }

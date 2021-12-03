@@ -4,7 +4,7 @@ import { DateTime } from "luxon";
 import React from "react";
 import { Svg } from './SMICChart';
 import { Scales } from "./Scales";
-import { SelectedRange, SetRangeType } from "./SelectedRange";
+import { SetRangeType } from "./SelectedRange";
 
 
 export const useSelectRangeWithDrag = (svgRef: Svg, scales: Scales | null, setRange: SetRangeType) => {
