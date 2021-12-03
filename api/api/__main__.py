@@ -60,12 +60,15 @@ class LabelAssignmentPostData(BaseModel):
 @app.post("/meters/{meter_id}/labels")
 def assign_label(meter_id: int, data: LabelAssignmentPostData):
     with Session(engine) as session:
-        assigmnet = LabelAssignment(meter_id=meter_id,
+        assignment = LabelAssignment(meter_id=meter_id,
                                     label_id=data.label_id,
                                     start_time=data.start_time,
                                     end_time=data.end_time)
-        session.add(assigmnet)
-        return "Label assigned successfuly!"
+        ass1 = LabelAssignment(meter_id=1, label_id=1, start_time=datetime(
+            2020, 1, 1, 0, 0, 30), end_time=datetime(2020, 1, 1, 0, 0, 40))
+        session.add(assignment)
+        session.commit()
+        return "Label assigned successfully!"
 
 
 @app.get("/meters/{meter_id}/labels")
@@ -99,7 +102,7 @@ def set_defaults():
         label1 = Label(name="Label one", id=1)
         label2 = Label(name="Label two", id=2)
         ass1 = LabelAssignment(meter_id=meter1.id, label_id=label1.id, start_time=datetime(
-            2020, 1, 1, 0, 0, 0), end_time=datetime(2020, 1, 1, 0, 0, 10))
+            2020, 1, 1, 0, 0, 30), end_time=datetime(2020, 1, 1, 0, 0, 40))
         session.add(label1)
         session.add(label2)
         session.add(ass1)
@@ -123,6 +126,6 @@ if __name__ == "__main__":
     import uvicorn
 
     host = os.getenv("SMIC_HOST", "0.0.0.0")
-    port = int(os.getenv("SMIC_PORT", 8080))
+    port = int(os.getenv("SMIC_PORT", 8081))
 
     uvicorn.run(app, host=host, port=port)
