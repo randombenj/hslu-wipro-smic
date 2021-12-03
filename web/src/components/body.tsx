@@ -14,6 +14,7 @@ import { mapMeasurementsToPowerLine } from '../model/PowerData';
 import { Line } from '../model/Line';
 import { Measurement } from '../model/Measurement';
 import { SelectedRange, SetRangeType } from './charts/SelectedRange';
+import { DateTime } from 'luxon';
 
 const Body = () => {
   const [refetchIndex, setRefetchIndex] = useState(0);
@@ -31,13 +32,13 @@ const Body = () => {
   if (!data) {
     data = [];
   }
-  const [selectedRange, setSelectedRange] = useState<SelectedRange>();
+  const [selectedRange, setSelectedRange] = useState<SelectedRange>({ start: DateTime.now(), end: DateTime.now() });
 
   let graphs = useGetGraphsStack(filterData, data, setSelectedRange);
 
 
 
-  const labels = Labels(filterData);
+  const labels = Labels(filterData, selectedRange);
   // useInterval(() => {
   //   refetch();
   // }, 1000) // this makes the dragging ugly...
@@ -61,7 +62,6 @@ const Body = () => {
       </Grid>
       <Grid item style={{ marginTop: 5 }}>
         {labels}
-        {selectedRange?.start.toString()}
       </Grid>
     </div>
   </Box >

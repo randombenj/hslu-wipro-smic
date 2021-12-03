@@ -1,13 +1,15 @@
 import Paper from '@mui/material/Paper';
 import { useGetLabels, useGetLabelAssignments, useAddLabelAssignment } from '../hooks/labels';
 import { FilterData } from './filter';
-import { Grid, Button } from '@mui/material';
+import { Grid, Button, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { DateTime } from 'luxon';
 import useFetch from "use-http";
 import formatDate from "../hooks/utils";
+import { SelectedRange } from './charts/SelectedRange';
+import { useState } from 'react';
 
-const Labels = (filterData: FilterData) => {
+const Labels = (filterData: FilterData, selectedRange: SelectedRange) => {
     const labels = useGetLabels().data;
     let labelElements = labels?.map(label => <div>{label.name}</div>)
     // let {addLabel} = useAddLabelAssignment();
@@ -18,15 +20,20 @@ const Labels = (filterData: FilterData) => {
     }
 
     const { post } = useFetch('meters', { method: "POST" })
-
+    const [selectedLabel, setSelectedLabel] = useState(1);
     const addLabel = async () => {
         const data = {
-            label_id: 1,
-            start_date: formatDate(DateTime.now()),
-            end_date: formatDate(DateTime.now()),
+            label_id: selectedLabel,
+            start_time: formatDate(selectedRange.start)+"Z",
+            end_time: formatDate(selectedRange.end)+"Z",
         };
-        await post('/1/labels', data);
+        await post(`/${filterData.meterId}/labels`, data);
     }
+    let menuItems: JSX.Element[] = [];
+    if (labels) {
+        menuItems = labels.map(label => <MenuItem key={label.id} value={label.id}>{label.name}</MenuItem>);
+    }
+
 
     return (
         <Paper elevation={3} style={{ padding: 5 }}>
@@ -43,6 +50,26 @@ const Labels = (filterData: FilterData) => {
                     </ul>
                 </Grid>
                 <Grid item>
+                    <h3>Selected period</h3>
+                    <p>{selectedRange.start.toString()}</p>
+                    <p> to </p>
+                    <p>{selectedRange.end.toString()}</p>
+                    <FormControl style={{ width: "200px", margin: "10px" }}>
+                        <InputLabel id="select-label-label">Label</InputLabel>
+                        <Select
+                            labelId="select-label-label"
+                            id="select-meter"
+                            value={selectedLabel}
+                            label="Label"
+                            onChange={e =>
+                                setSelectedLabel((e.target.value as any))
+                            }
+                        >
+                            {
+                                menuItems
+                            }
+                        </Select>
+                    </FormControl>
                     <Button variant="contained" onClick={addLabel} endIcon={<AddCircleIcon />}>Add</Button>
                 </Grid>
             </Grid>
