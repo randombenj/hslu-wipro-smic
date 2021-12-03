@@ -8,10 +8,12 @@ import { useSelectRangeWithDrag } from './useSelectRangeWithDrag';
 import { useCreateBase } from './useCreateBase';
 import { useDrawLines } from './useDrawLines';
 import { Margin } from './Margin';
+import { SetRangeType } from './SelectedRange';
 
 interface porps {
     lines: Line[];
     yAxisName: string;
+    setSelectedRange: SetRangeType;
 }
 
 const SMICChart = (props: porps) => {
@@ -25,7 +27,7 @@ const SMICChart = (props: porps) => {
 
     const [svg, baseChartElement] = useCreateBase(height, width, margin);
     const scales = getScales(props.lines, height, width);
-    const range = useSelectRangeWithDrag(svg, scales);
+    const range = useSelectRangeWithDrag(svg, scales, props.setSelectedRange);
     useDrawAxis("Time", props.yAxisName, svg, scales, height, width, margin);
     useDrawLines(svg, props.lines, scales);
     useDrawLabels(svg, scales, height);

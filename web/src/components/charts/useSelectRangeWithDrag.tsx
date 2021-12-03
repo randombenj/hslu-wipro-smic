@@ -4,10 +4,10 @@ import { DateTime } from "luxon";
 import React from "react";
 import { Svg } from './SMICChart';
 import { Scales } from "./Scales";
-import { SelectedRange } from "./SelectedRange";
+import { SelectedRange, SetRangeType } from "./SelectedRange";
 
-export const useSelectRangeWithDrag = (svgRef: Svg, scales: Scales | null): SelectedRange | null => {
-    const [range, setRange] = React.useState<SelectedRange | null>(null);
+
+export const useSelectRangeWithDrag = (svgRef: Svg, scales: Scales | null, setRange: SetRangeType) => {
     const [selection, setSelection] = React.useState<any | null>(null);
 
     useEffect(() => {
@@ -138,5 +138,4 @@ export const useSelectRangeWithDrag = (svgRef: Svg, scales: Scales | null): Sele
             svg.call(dragBehavior);
         }
     }, [svgRef, scales]);
-    return range;
 };
