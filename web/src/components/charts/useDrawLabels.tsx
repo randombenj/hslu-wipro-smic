@@ -6,7 +6,9 @@ import { LabelAssignment } from '../../hooks/labels';
 import { DateTime } from 'luxon';
 
 
-export const useDrawLabels = (svgRef: Svg, scales: Scales | null, height: number, labels: LabelAssignment[]) => {
+export type LabelClickedType = (label: LabelAssignment) => void;
+
+export const useDrawLabels = (svgRef: Svg, scales: Scales | null, height: number, labels: LabelAssignment[], onLabelClicked: LabelClickedType) => {
 
     useEffect(() => {
         if (scales) {
@@ -19,9 +21,10 @@ export const useDrawLabels = (svgRef: Svg, scales: Scales | null, height: number
                     .attr('y', 0)
                     .attr('width', scales.x(DateTime.fromISO(label.end_time)) - scales.x(DateTime.fromISO(label.start_time)))
                     .attr('height', height)
-                    .attr('fill', "red")
-                    
-                    .attr('opacity', 0.5);
+                    .attr('fill', label.color)
+                    .attr('opacity', 0.5).on('click', () => {
+                        onLabelClicked(label);
+                    });
             });
         }
     }, [scales, height, labels]);

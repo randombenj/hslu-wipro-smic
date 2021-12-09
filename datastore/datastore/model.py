@@ -30,7 +30,8 @@ class Measurement(SQLModel, table=True):
 
 class Label(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
-    name: str
+    name: str =  Field()
+    color: str =  Field()
 
 
 class LabelAssignment(SQLModel, table=True):

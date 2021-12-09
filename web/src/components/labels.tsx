@@ -8,7 +8,7 @@ import formatDate from "../hooks/utils";
 import { SelectedRange } from './charts/SelectedRange';
 import { useState } from 'react';
 
-const Labels = (filterData: FilterData, selectedRange: SelectedRange) => {
+const Labels = (filterData: FilterData, selectedRange: SelectedRange, refetch:any) => {
     const labels = useGetLabels().data;
     let labelElements = labels?.map(label => <div>{label.name}</div>)
     let labelAssignments = useGetLabelAssignments(filterData.meterId).data;
@@ -26,6 +26,7 @@ const Labels = (filterData: FilterData, selectedRange: SelectedRange) => {
             end_time: formatDate(selectedRange.end) + "Z",
         };
         await post(`/${filterData.meterId}/labels`, data);
+        refetch();
     }
     let menuItems: JSX.Element[] = [];
     if (labels) {
@@ -34,19 +35,8 @@ const Labels = (filterData: FilterData, selectedRange: SelectedRange) => {
 
 
     return (
-        <Paper elevation={3} style={{ padding: 5 }}>
+        <Paper elevation={3} style={{ padding: 5, width: 500 }}>
             <Grid container>
-                <Grid item>
-                    <h2>Labels</h2>
-                    {
-                        labelElements
-                    }
-                </Grid>
-                <Grid item>
-                    <ul>
-                        {assignments}
-                    </ul>
-                </Grid>
                 <Grid item>
                     <h3>Selected period</h3>
                     <p>{selectedRange.start.toString()}</p>

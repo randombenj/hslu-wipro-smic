@@ -1,7 +1,7 @@
 
 import Paper from '@mui/material/Paper';
 import { Line } from '../../model/Line'
-import { useDrawLabels } from './useDrawLabels';
+import { LabelClickedType, useDrawLabels } from './useDrawLabels';
 import { useDrawAxis } from './useDrawAxis';
 import { getScales } from './getScales';
 import { useSelectRangeWithDrag } from './useSelectRangeWithDrag';
@@ -15,7 +15,9 @@ interface porps {
     lines: Line[];
     yAxisName: string;
     setSelectedRange: SetRangeType;
+    onLabelClicked: LabelClickedType;
     labels: LabelAssignment[];
+    labelMode: string;
 }
 
 const SMICChart = (props: porps) => {
@@ -29,10 +31,13 @@ const SMICChart = (props: porps) => {
 
     const [svg, baseChartElement] = useCreateBase(height, width, margin);
     const scales = getScales(props.lines, height, width);
-    const range = useSelectRangeWithDrag(svg, scales, props.setSelectedRange);
+    const dragEnabled = props.labelMode === 'add_label';
+
+    const range = useSelectRangeWithDrag(svg, scales, props.setSelectedRange, dragEnabled);
+
     useDrawAxis("Time", props.yAxisName, svg, scales, height, width, margin);
     useDrawLines(svg, props.lines, scales);
-    useDrawLabels(svg, scales, height, props.labels);
+    useDrawLabels(svg, scales, height, props.labels, props.onLabelClicked);
 
     return (
         <Paper elevation={3} style={{ width: width + left + right }}>

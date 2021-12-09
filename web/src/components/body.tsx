@@ -16,6 +16,11 @@ import { Measurement } from '../model/Measurement';
 import { SelectedRange, SetRangeType } from './charts/SelectedRange';
 import { DateTime } from 'luxon';
 import { LabelAssignment, useGetLabelAssignments } from '../hooks/labels';
+import { LabelClickedType } from './charts/useDrawLabels';
+import { LabelDetails } from './labelDetails';
+import { SwitchLabelMode } from './switchLabelMode';
+import Refresh from '@mui/icons-material/Refresh';
+import IconButton from '@mui/material/IconButton';
 
 const Body = () => {
   const [refetchIndex, setRefetchIndex] = useState(0);
@@ -34,15 +39,19 @@ const Body = () => {
     data = [];
   }
   const [selectedRange, setSelectedRange] = useState<SelectedRange>({ start: DateTime.now(), end: DateTime.now() });
-  let labelAssignments = useGetLabelAssignments(filterData.meterId).data;
+  let labelAssignments = useGetLabelAssignments(filterData.meterId, refetchIndex).data;
   if (!labelAssignments) {
     labelAssignments = [];
   }
-  let graphs = useGetGraphsStack(filterData, data, setSelectedRange, labelAssignments);
+
+  const [selectedLabel, setSelectedLabel] = useState<LabelAssignment | null>(null);
+
+  const [labelMode, setLabelMode] = useState<string>("view_label");
+  const showAddLabel = labelMode === "add_label";
+  let graphs = useGetGraphsStack(filterData, data, setSelectedRange, labelAssignments, setSelectedLabel, labelMode);
 
 
-
-  const labels = Labels(filterData, selectedRange);
+  const labels = Labels(filterData, selectedRange, refetch);
   // useInterval(() => {
   //   refetch();
   // }, 1000) // this makes the dragging ugly...
@@ -59,13 +68,27 @@ const Body = () => {
         <Grid item>
           {filter}
         </Grid>
-
+        <Grid item>
+          <IconButton onClick={refetch} >
+            <Refresh />
+          </IconButton>
+        </Grid>
         <Grid item xs={12} style={{ marginTop: 5 }}>
           {graphs}
         </Grid>
-      </Grid>
-      <Grid item style={{ marginTop: 5 }}>
-        {labels}
+        <Grid item style={{ marginTop: 5 }}>
+          <SwitchLabelMode labelMode={labelMode} setLabelMode={setLabelMode} ></SwitchLabelMode>
+        </Grid>
+        {showAddLabel &&
+          <Grid item style={{ marginTop: 5, marginLeft: 5 }}>
+            {labels}
+          </Grid>
+        }
+        {!showAddLabel &&
+          <Grid item style={{ marginTop: 5, marginLeft: 5 }}>
+            <LabelDetails label={selectedLabel} refetch={refetch} />
+          </Grid>
+        }
       </Grid>
     </div>
   </Box >
@@ -75,16 +98,16 @@ export default Body;
 const wrapGraph = (graph: JSX.Element) => {
   return <Grid item style={{ marginRight: 5 }}>{graph}</Grid>
 }
-const useGetGraphsStack = (filterData: FilterData, measurements: Measurement[], setRange: SetRangeType, labels: LabelAssignment[]): JSX.Element => {
+const useGetGraphsStack = (filterData: FilterData, measurements: Measurement[], setRange: SetRangeType, labels: LabelAssignment[], onLabelClicked: LabelClickedType, labelMode: string): JSX.Element => {
   const graphs: Array<JSX.Element> = [];
   useMemo(() => {
     if (filterData.selectedMeasurements.includes('Voltage')) {
       const voltageLines: Line[] = mapMeasurementsToVoltageLines(measurements);
-      graphs.push(wrapGraph(<SMICChart lines={voltageLines} yAxisName="Voltage" setSelectedRange={setRange} labels={labels}></ SMICChart>));
+      graphs.push(wrapGraph(<SMICChart lines={voltageLines} yAxisName="Voltage" setSelectedRange={setRange} labels={labels} onLabelClicked={onLabelClicked} labelMode={labelMode}></ SMICChart>));
     }
     if (filterData.selectedMeasurements.includes('Power')) {
       const powerLine: Line = mapMeasurementsToPowerLine(measurements);
-      graphs.push(wrapGraph(<SMICChart lines={[powerLine]} yAxisName="Power" setSelectedRange={setRange} labels={labels}></ SMICChart>));
+      graphs.push(wrapGraph(<SMICChart lines={[powerLine]} yAxisName="Power" setSelectedRange={setRange} labels={labels} onLabelClicked={onLabelClicked} labelMode={labelMode}></ SMICChart>));
     }
     if (filterData.selectedMeasurements.includes('THD')) {
       // graphs.push(wrapGraph(<NewChart measurements={data} yAxisName="THD"></ NewChart>));

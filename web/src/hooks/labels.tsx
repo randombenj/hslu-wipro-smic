@@ -6,6 +6,7 @@ export interface LabelAssignment {
     name: string;
     start_time: string;
     end_time: string;
+    id: string;
     color: string;
 }
 

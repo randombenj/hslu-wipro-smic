@@ -7,11 +7,11 @@ import { Scales } from "./Scales";
 import { SetRangeType } from "./SelectedRange";
 
 
-export const useSelectRangeWithDrag = (svgRef: Svg, scales: Scales | null, setRange: SetRangeType) => {
+export const useSelectRangeWithDrag = (svgRef: Svg, scales: Scales | null, setRange: SetRangeType, dragEnabled:boolean) => {
     const [selection, setSelection] = React.useState<any | null>(null);
 
     useEffect(() => {
-        if (scales) {
+        if (scales &&dragEnabled) {
             const svg = d3.select(svgRef.current).select("g");
             let element: d3.Selection<SVGRectElement, unknown, null, undefined> = null as any;
             let previousElement: d3.Selection<SVGRectElement, unknown, null, undefined> = null as any;
