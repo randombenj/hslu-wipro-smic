@@ -25,5 +25,5 @@ def assign_label(await_data_post):
 
 @then("label was assigned correctly")
 def check_label_assigned_correctly(await_data_request):
-    response = await_data_request("/labels/assignments")
+    response = await_data_request("/meters/2/labels")
     assert len(response.json()) == 1
