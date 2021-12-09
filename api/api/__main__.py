@@ -74,10 +74,18 @@ def assign_label(meter_id: int, data: LabelAssignmentPostData):
 @app.get("/meters/{meter_id}/labels")
 def get_assigned_labels(meter_id: int):
     with Session(engine) as session:
-        labels = session.query(LabelAssignment.start_time, LabelAssignment.end_time, Label.name).filter(
+        labels = session.query(LabelAssignment.start_time, LabelAssignment.end_time, Label.name, Label.color, LabelAssignment.id).filter(
             LabelAssignment.meter_id == meter_id).join(Label).all()
         return labels
 
+
+@app.delete("/labels/assignments/{assignment_id}")
+def delete_assignment(assignment_id: int):
+    with Session(engine) as session:
+        session.query(LabelAssignment).filter(
+            LabelAssignment.id == assignment_id).delete()
+        session.commit()
+        return "Label assignment deleted successfully!"
 
 @app.get("/labels")
 def get_labels():
@@ -99,15 +107,15 @@ def set_defaults():
         session.add(meter1)
         session.add(meter2)
 
-        label1 = Label(name="Label one", id=1)
-        label2 = Label(name="Label two", id=2)
+        label1 = Label(name="Label one", id=1, color="red")
+        label2 = Label(name="Label two", id=2, color="blue")
         ass1 = LabelAssignment(meter_id=meter1.id, label_id=label1.id, start_time=datetime(
             2020, 1, 1, 0, 0, 30), end_time=datetime(2020, 1, 1, 0, 0, 40))
         session.add(label1)
         session.add(label2)
         session.add(ass1)
         session.commit()
-        return "Default set successfuly!"
+        return "Default set successfully!"
 
 
 @app.post("/db/clear")
