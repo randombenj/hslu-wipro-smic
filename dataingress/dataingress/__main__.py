@@ -1,3 +1,4 @@
+import ssl
 import uuid
 import json
 import logging
@@ -8,9 +9,17 @@ from dataingress.messagehandler import handle_message
 
 
 class SMICIngress:
-    def __init__(self, broker="0.0.0.0", port=1883, subscribe_to_topic="smic/monitoring-data"):
+    def __init__(self, broker="0.0.0.0", port=8883, subscribe_to_topic="smic/monitoring-data"):
         self._client_id = f'smic-{uuid.uuid4()}'
         self._client = mqtt_client.Client(self._client_id)
+        self._client.tls_set(
+            ca_certs="/ca.crt",
+            cert_reqs=ssl.CERT_NONE,
+            #certfile="/client.crt",
+            #keyfile="/client.key",
+            tls_version=ssl.PROTOCOL_TLSv1_2
+        )
+        self._client.tls_insecure_set(True)
         self._client.username_pw_set("insecure", "insecure")
         self._client.on_connect = self.__on_connect
         self._client.connect(broker, port)
