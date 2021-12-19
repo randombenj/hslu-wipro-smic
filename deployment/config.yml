@@ -35,6 +35,8 @@ spec:
       volumeMounts:
         - mountPath: /app/dataingress/database.db
           name: database
+        - mountPath: /rootCA.pem
+          name: ca
       workingDir: /app/dataingress
 
     - name: mqtt
@@ -45,9 +47,15 @@ spec:
       volumeMounts:
         - mountPath: /mosquitto/config/mosquitto.conf
           name: mqtt-config
+        - mountPath: /rootCA.pem
+          name: ca
+        - mountPath: /localhost+4.pem
+          name: server-crt
+        - mountPath: /localhost+4-key.pem
+          name: server-key
       ports:
-        - containerPort: 1883
-          hostPort: 1883
+        - containerPort: 8883
+          hostPort: 8883
         - containerPort: 9001
           hostPort: 9001
           protocol: TCP
@@ -67,6 +75,16 @@ spec:
     - name: database
       hostPath:
         path: data/database.db
+
+    - name: ca
+      hostPath:
+        path: data/mkcert/rootCA.pem
+    - name: server-key
+      hostPath:
+        path: data/mkcert/localhost+4-key.pem
+    - name: server-crt
+      hostPath:
+        path: data/mkcert/localhost+4.pem
 
     - name: mqtt-config
       hostPath:

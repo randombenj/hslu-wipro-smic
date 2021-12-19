@@ -1,9 +1,15 @@
+import ssl
 import uuid
 import logging
 
 from dataclasses import dataclass
 
+from pathlib import Path
+
 from paho.mqtt import client as mqtt_client
+
+
+SSL_DIR = Path(__file__).parent / ".." / ".." / "data" / "mkcert"
 
 
 @dataclass
@@ -12,9 +18,15 @@ class MQTTResult:
 
 
 class SMICCLient:
-    def __init__(self, broker="localhost", port=1883):
+    def __init__(self, broker="localhost", port=8883):
         self._client_id = f'smic-{uuid.uuid4()}'
         self._client = mqtt_client.Client(self._client_id)
+        self._client.tls_set(
+            ca_certs=str(SSL_DIR / "rootCA.pem"),
+            cert_reqs=ssl.CERT_NONE,
+            tls_version=ssl.PROTOCOL_TLSv1_2
+        )
+        self._client.tls_insecure_set(True)
         self._client.username_pw_set("insecure", "insecure")
         self._client.on_connect = self.__on_connect
         self._client.connect(broker, port)

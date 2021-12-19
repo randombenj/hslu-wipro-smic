@@ -45,20 +45,21 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get -y update
-          sudo apt-get -y install podman
+          sudo apt-get -y install podman make
           sudo curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
+          wget https://github.com/FiloSottile/mkcert/releases/download/v1.4.3/mkcert-v1.4.3-linux-amd64 -O /usr/local/bin/mkcert
+          chmod +x /usr/local/bin/mkcert
 
       - name: Start setup
         run: |
           mkdir -p data/mqtt-data/
           mkdir -p data/mqtt-logs/
           touch data/database.db
-          podman play kube deployment/config.yml
+          make run
 
       - name: Run tests
         run: |
-          cd tests
-          $HOME/.poetry/bin/poetry install
-          $HOME/.poetry/bin/poetry run python -m pytest --gherkin-terminal-reporter -vvv
+          export PATH="$PATH:$HOME/.poetry/bin"
+          make test
 
 
