@@ -13,10 +13,8 @@ class SMICIngress:
         self._client_id = f'smic-{uuid.uuid4()}'
         self._client = mqtt_client.Client(self._client_id)
         self._client.tls_set(
-            ca_certs="/ca.crt",
+            ca_certs="/rootCA.pem",
             cert_reqs=ssl.CERT_NONE,
-            #certfile="/client.crt",
-            #keyfile="/client.key",
             tls_version=ssl.PROTOCOL_TLSv1_2
         )
         self._client.tls_insecure_set(True)

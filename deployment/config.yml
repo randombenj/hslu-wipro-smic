@@ -35,12 +35,8 @@ spec:
       volumeMounts:
         - mountPath: /app/dataingress/database.db
           name: database
-        - mountPath: /ca.crt
+        - mountPath: /rootCA.pem
           name: ca
-        - mountPath: /client.crt
-          name: client-crt
-        - mountPath: /client.key
-          name: client-key
       workingDir: /app/dataingress
 
     - name: mqtt
@@ -51,11 +47,11 @@ spec:
       volumeMounts:
         - mountPath: /mosquitto/config/mosquitto.conf
           name: mqtt-config
-        - mountPath: /ca.crt
+        - mountPath: /rootCA.pem
           name: ca
-        - mountPath: /server.crt
+        - mountPath: /localhost+4.pem
           name: server-crt
-        - mountPath: /server.key
+        - mountPath: /localhost+4-key.pem
           name: server-key
       ports:
         - containerPort: 8883
@@ -82,20 +78,13 @@ spec:
 
     - name: ca
       hostPath:
-        path: data/ssl/ca.crt
+        path: data/mkcert/rootCA.pem
     - name: server-key
       hostPath:
-        path: data/ssl/server.key
+        path: data/mkcert/localhost+4-key.pem
     - name: server-crt
       hostPath:
-        path: data/ssl/server.crt
-
-    - name: client-key
-      hostPath:
-        path: data/ssl/client.key
-    - name: client-crt
-      hostPath:
-        path: data/ssl/client.crt
+        path: data/mkcert/localhost+4.pem
 
     - name: mqtt-config
       hostPath:
