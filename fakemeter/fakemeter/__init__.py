@@ -9,7 +9,7 @@ from pathlib import Path
 from paho.mqtt import client as mqtt_client
 
 
-SSL_DIR = Path(__file__).parent / ".." / ".." / "data" / "ssl"
+SSL_DIR = Path(__file__).parent / ".." / ".." / "data" / "mkcert"
 
 
 @dataclass
@@ -22,9 +22,7 @@ class SMICCLient:
         self._client_id = f'smic-{uuid.uuid4()}'
         self._client = mqtt_client.Client(self._client_id)
         self._client.tls_set(
-            ca_certs=str(SSL_DIR / "ca.crt"),
-            keyfile=str(SSL_DIR / "client.key"),
-            certfile=str(SSL_DIR / "client.crt"),
+            ca_certs=str(SSL_DIR / "rootCA.pem"),
             cert_reqs=ssl.CERT_NONE,
             tls_version=ssl.PROTOCOL_TLSv1_2
         )
